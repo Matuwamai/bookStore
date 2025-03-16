@@ -12,13 +12,14 @@ model User {
   name      String
   email     String  @unique
   password  String
-  role      Role    @default(USER) // "USER" or "ADMIN"
+  contact   String
+  role      Role    @default(CUSTOMER) // "CUSTOMER" or "ADMIN"
   discounts Discount[]
   orders    Order[]
 }
 
 enum Role {
-  USER
+  CUSTOMER
   ADMIN
 }
 

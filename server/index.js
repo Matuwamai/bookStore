@@ -1,16 +1,16 @@
 import express from 'express';
-import { PrismaClient } from '@prisma/client';
+// import { PrismaClient } from '@prisma/client';
 import dotenv from 'dotenv';
-
+import cors from "cors"
+import userRoutes from "./routes/user.js";
 dotenv.config();
-const prisma = new PrismaClient();
+
 const app = express();
+app.use(cors());
+dotenv.config();
 
 app.use(express.json());
-
-app.get('/', (req, res) => {
-  res.send('Bookstore API is running...');
-});
+app.use("/api/users", userRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
