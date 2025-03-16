@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int     @id @default(autoincrement())
+  name      String
+  email     String  @unique
+  password  String
+  role      Role    @default(USER) // "USER" or "ADMIN"
+  discounts Discount[]
+  orders    Order[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Book {
+  id         Int     @id @default(autoincrement())
+  title      String
+  author     String
+  price      Float
+  stock      Int
+  wholesale  Boolean @default(false) // Wholesale vs. retail
+  classId    Int
+  subjectId  Int
+  class      Class   @relation(fields: [classId], references: [id])
+  subject    Subject @relation(fields: [subjectId], references: [id])
+  discounts  Discount[]
+  orderItems OrderItem[]
+}
+
+model Class {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  books Book[]
+}
+
+model Subject {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  books Book[]
+}
+
+model Discount {
+  id       Int     @id @default(autoincrement())
+  type     String  // "user" or "book"
+  value    Float   // Discount percentage or fixed amount
+  userId   Int?    @unique
+  bookId   Int?
+  user     User?   @relation(fields: [userId], references: [id])
+  book     Book?   @relation(fields: [bookId], references: [id])
+}
+
+model Order {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  total     Float
+  orderDate DateTime @default(now())
+  items     OrderItem[]
+}
+
+model OrderItem {
+  id       Int   @id @default(autoincrement())
+  orderId  Int
+  bookId   Int
+  quantity Int
+  book     Book  @relation(fields: [bookId], references: [id])
+  order    Order @relation(fields: [orderId], references: [id])
+}
