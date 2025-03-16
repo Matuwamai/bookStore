@@ -5,12 +5,10 @@ import userRoutes from "./routes/user.js";
 import bookRoutes from "./routes/book.js";
 import classRoutes from "./routes/class.js";
 import subjectRoutes from "./routes/subjects.js";
-
-
+import discountRoutes from "./routes/discount.js"
 
 
 dotenv.config();
-
 const app = express();
 app.use(cors());
 dotenv.config();
@@ -20,6 +18,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/books", bookRoutes);
 app.use("/api/classes", classRoutes);
 app.use("/api/subjects", subjectRoutes);
+app.use("/api/discounts", discountRoutes);
 
 
 

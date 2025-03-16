@@ -8,69 +8,75 @@ datasource db {
 }
 
 model User {
-  id        Int     @id @default(autoincrement())
+  id        Int        @id @default(autoincrement())
   name      String
-  email     String  @unique
+  email     String     @unique
   password  String
+  role      Role       @default(CUSTOMER)
   contact   String
-  role      Role    @default(CUSTOMER) // "CUSTOMER" or "ADMIN"
-  discounts Discount[]
   orders    Order[]
-}
-
-enum Role {
-  CUSTOMER
-  ADMIN
+  discounts Discount[] // One user can have multiple discounts
 }
 
 model Book {
-  id         Int     @id @default(autoincrement())
+  id         Int         @id @default(autoincrement())
   title      String
   author     String
   price      Float
   stock      Int
-  wholesale  Boolean @default(false) // Wholesale vs. retail
+  wholesale  Boolean     @default(false)
   classId    Int
   subjectId  Int
-  class      Class   @relation(fields: [classId], references: [id])
-  subject    Subject @relation(fields: [subjectId], references: [id])
+  class      Class       @relation(fields: [classId], references: [id])
+  subject    Subject     @relation(fields: [subjectId], references: [id])
   discounts  Discount[]
   orderItems OrderItem[]
+
+  @@index([classId], map: "Book_classId_fkey")
+  @@index([subjectId], map: "Book_subjectId_fkey")
 }
 
 model Class {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
   description String?
-
   books       Book[]
 }
 
 model Subject {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
   description String?
-
   books       Book[]
 }
 
+enum DiscountType {
+  USER
+  BOOK
+}
+
 model Discount {
-  id       Int     @id @default(autoincrement())
-  type     String  // "user" or "book"
-  value    Float   // Discount percentage or fixed amount
-  userId   Int?    @unique
-  bookId   Int?
-  user     User?   @relation(fields: [userId], references: [id])
-  book     Book?   @relation(fields: [bookId], references: [id])
+  id         Int           @id @default(autoincrement())
+  type       Discount_type
+  userId     Int? // Foreign key for User (optional)
+  bookId     Int? // Foreign key for Book (optional)
+  amount     Float
+  validUntil DateTime
+  user       User?         @relation(fields: [userId], references: [id]) // Fix: Add relation to User
+  book       Book?         @relation(fields: [bookId], references: [id])
+
+  @@index([bookId], map: "Discount_bookId_fkey")
 }
 
 model Order {
-  id        Int      @id @default(autoincrement())
+  id        Int         @id @default(autoincrement())
   userId    Int
-  user      User     @relation(fields: [userId], references: [id])
   total     Float
-  orderDate DateTime @default(now())
+  orderDate DateTime    @default(now())
+  user      User        @relation(fields: [userId], references: [id])
   items     OrderItem[]
+
+  @@index([userId], map: "Order_userId_fkey")
 }
 
 model OrderItem {
@@ -80,4 +86,17 @@ model OrderItem {
   quantity Int
   book     Book  @relation(fields: [bookId], references: [id])
   order    Order @relation(fields: [orderId], references: [id])
+
+  @@index([bookId], map: "OrderItem_bookId_fkey")
+  @@index([orderId], map: "OrderItem_orderId_fkey")
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum Discount_type {
+  USER
+  BOOK
 }

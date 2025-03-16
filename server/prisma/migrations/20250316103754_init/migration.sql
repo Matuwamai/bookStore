@@ -4,7 +4,8 @@ CREATE TABLE `User` (
     `name` VARCHAR(191) NOT NULL,
     `email` VARCHAR(191) NOT NULL,
     `password` VARCHAR(191) NOT NULL,
-    `role` ENUM('USER', 'ADMIN') NOT NULL DEFAULT 'USER',
+    `role` ENUM('CUSTOMER', 'ADMIN') NOT NULL DEFAULT 'CUSTOMER',
+    `contact` VARCHAR(191) NOT NULL,
 
     UNIQUE INDEX `User_email_key`(`email`),
     PRIMARY KEY (`id`)
@@ -21,6 +22,8 @@ CREATE TABLE `Book` (
     `classId` INTEGER NOT NULL,
     `subjectId` INTEGER NOT NULL,
 
+    INDEX `Book_classId_fkey`(`classId`),
+    INDEX `Book_subjectId_fkey`(`subjectId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -28,6 +31,7 @@ CREATE TABLE `Book` (
 CREATE TABLE `Class` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
+    `description` VARCHAR(191) NULL,
 
     UNIQUE INDEX `Class_name_key`(`name`),
     PRIMARY KEY (`id`)
@@ -37,6 +41,7 @@ CREATE TABLE `Class` (
 CREATE TABLE `Subject` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
+    `description` VARCHAR(191) NULL,
 
     UNIQUE INDEX `Subject_name_key`(`name`),
     PRIMARY KEY (`id`)
@@ -45,12 +50,13 @@ CREATE TABLE `Subject` (
 -- CreateTable
 CREATE TABLE `Discount` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `type` VARCHAR(191) NOT NULL,
-    `value` DOUBLE NOT NULL,
+    `type` ENUM('USER', 'BOOK') NOT NULL,
     `userId` INTEGER NULL,
     `bookId` INTEGER NULL,
+    `amount` DOUBLE NOT NULL,
+    `validUntil` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `Discount_userId_key`(`userId`),
+    INDEX `Discount_bookId_fkey`(`bookId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -61,6 +67,7 @@ CREATE TABLE `Order` (
     `total` DOUBLE NOT NULL,
     `orderDate` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
+    INDEX `Order_userId_fkey`(`userId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -71,6 +78,8 @@ CREATE TABLE `OrderItem` (
     `bookId` INTEGER NOT NULL,
     `quantity` INTEGER NOT NULL,
 
+    INDEX `OrderItem_bookId_fkey`(`bookId`),
+    INDEX `OrderItem_orderId_fkey`(`orderId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
