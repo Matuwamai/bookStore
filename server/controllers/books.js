@@ -2,20 +2,33 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// ✅ Create a new book
 export const createBook = async (req, res) => {
   try {
     const { title, author, price, stock, wholesale, classId, subjectId } = req.body;
 
+    // Validate classId and subjectId
+    const classExists = await prisma.class.findUnique({
+      where: { id: classId },
+    });
+
+    const subjectExists = await prisma.subject.findUnique({
+      where: { id: subjectId },
+    });
+
+    if (!classExists || !subjectExists) {
+      return res.status(400).json({ message: "Invalid classId or subjectId" });
+    }
+
+    // Create the book
     const book = await prisma.book.create({
       data: {
         title,
         author,
         price,
         stock,
-        wholesale, // true if wholesale, false if retail
-        classId, // Ensure classId exists in the database
-        subjectId, // Ensure subjectId exists in the database
+        wholesale,
+        classId,
+        subjectId,
       },
     });
 
@@ -25,8 +38,6 @@ export const createBook = async (req, res) => {
     res.status(500).json({ message: "Error creating book" });
   }
 };
-
-// ✅ Get all books
 export const getBooks = async (req, res) => {
   try {
     const books = await prisma.book.findMany({
@@ -43,7 +54,6 @@ export const getBooks = async (req, res) => {
   }
 };
 
-// ✅ Get a single book by ID
 export const getBookById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -64,7 +74,6 @@ export const getBookById = async (req, res) => {
   }
 };
 
-// ✅ Update a book
 export const updateBook = async (req, res) => {
   try {
     const { id } = req.params;
@@ -82,7 +91,6 @@ export const updateBook = async (req, res) => {
   }
 };
 
-// ✅ Delete a book
 export const deleteBook = async (req, res) => {
   try {
     const { id } = req.params;

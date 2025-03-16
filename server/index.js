@@ -4,6 +4,8 @@ import cors from "cors"
 import userRoutes from "./routes/user.js";
 import bookRoutes from "./routes/book.js";
 import classRoutes from "./routes/class.js";
+import subjectRoutes from "./routes/subjects.js";
+
 
 
 
@@ -17,6 +19,8 @@ app.use(express.json());
 app.use("/api/users", userRoutes);
 app.use("/api/books", bookRoutes);
 app.use("/api/classes", classRoutes);
+app.use("/api/subjects", subjectRoutes);
+
 
 
 

@@ -46,11 +46,12 @@ model Class {
   books       Book[]
 }
 
-
 model Subject {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
-  books Book[]
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+
+  books       Book[]
 }
 
 model Discount {
