@@ -6,6 +6,8 @@ import bookRoutes from "./routes/book.js";
 import classRoutes from "./routes/class.js";
 import subjectRoutes from "./routes/subjects.js";
 import discountRoutes from "./routes/discount.js"
+import orderRoutes from "./routes/orders.js";
+
 
 
 dotenv.config();
@@ -19,6 +21,8 @@ app.use("/api/books", bookRoutes);
 app.use("/api/classes", classRoutes);
 app.use("/api/subjects", subjectRoutes);
 app.use("/api/discounts", discountRoutes);
+app.use("/api/orders", orderRoutes);
+
 
 
 
