@@ -7,7 +7,6 @@ export const createDiscount = async (req, res) => {
   try {
     const { amount, type, userId, bookId, validUntil } = req.body;
 
-    // Ensure that the discount is either for a user or a book
     if (type === "USER" && !userId) {
       return res.status(400).json({ message: "User ID is required for user discounts" });
     }
@@ -53,12 +52,12 @@ export const getDiscounts = async (req, res) => {
 // Get discounts for a user
 export const getUserDiscounts = async (req, res) => {
   try {
-    const { userId } = req.params; // Extract userId from request parameters
+    const { userId } = req.params; 
 
     const discounts = await prisma.discount.findMany({
       where: {
-        userId: Number(userId), // Find discounts for the user
-        validUntil: { gte: new Date() }, // Filter out expired discounts
+        userId: Number(userId), 
+        validUntil: { gte: new Date() }, 
       },
     });
 

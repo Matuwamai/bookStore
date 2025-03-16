@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// ✅ Create an Order
+
 export const createOrder = async (req, res) => {
   try {
     const { userId, items } = req.body;
@@ -69,7 +69,7 @@ export const createOrder = async (req, res) => {
   }
 };
 
-// ✅ Get all orders
+
 export const getOrders = async (req, res) => {
   try {
     const orders = await prisma.order.findMany({
@@ -85,7 +85,6 @@ export const getOrders = async (req, res) => {
   }
 };
 
-// ✅ Get orders for a specific user
 export const getUserOrders = async (req, res) => {
   try {
     const { userId } = req.params;

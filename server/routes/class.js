@@ -9,7 +9,6 @@ import {
 
 const router = express.Router();
 
-// Define the routes for classes
 router.post("/", createClass);
 router.get("/", getClasses);
 router.get("/:id", getClassById);

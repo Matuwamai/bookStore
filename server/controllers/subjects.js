@@ -2,7 +2,6 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// ✅ Create a new subject
 export const createSubject = async (req, res) => {
   try {
     const { name, description } = req.body;
@@ -30,7 +29,6 @@ export const createSubject = async (req, res) => {
   }
 };
 
-// ✅ Get all subjects
 export const getSubjects = async (req, res) => {
   try {
     const subjects = await prisma.subject.findMany();
@@ -42,7 +40,7 @@ export const getSubjects = async (req, res) => {
   }
 };
 
-// ✅ Get a single subject by ID
+
 export const getSubjectById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -62,7 +60,6 @@ export const getSubjectById = async (req, res) => {
   }
 };
 
-// ✅ Update a subject
 export const updateSubject = async (req, res) => {
   try {
     const { id } = req.params;
@@ -80,7 +77,7 @@ export const updateSubject = async (req, res) => {
   }
 };
 
-// ✅ Delete a subject
+
 export const deleteSubject = async (req, res) => {
   try {
     const { id } = req.params;
