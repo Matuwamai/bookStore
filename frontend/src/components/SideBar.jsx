@@ -1,7 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { logout } from '../store/actions/userActions';
 
 const SideBar = ({children}) => {
+  const dispatch = useDispatch();
   return (
     <section>
       <button
@@ -32,7 +35,7 @@ const SideBar = ({children}) => {
           <ul className='space-y-2 font-medium'>
             <li>
               <Link
-                to='/'
+                to='/dashboard'
                 className='flex items-center p-2 text-white hover:text-gray-900 rounded-lg hover:bg-gray-100 group'>
                 <svg
                   className='w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white'
@@ -158,6 +161,7 @@ const SideBar = ({children}) => {
             <li>
               <a
                 href='#'
+                onClick={() => dispatch(logout())}
                 className='flex items-center p-2 text-white hover:text-gray-900 rounded-lg hover:bg-gray-100 group'>
                 <svg
                   className='shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white'
@@ -173,7 +177,7 @@ const SideBar = ({children}) => {
                     d='M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3'
                   />
                 </svg>
-                <span className='flex-1 ms-3 whitespace-nowrap'>Sign In</span>
+                <span className='flex-1 ms-3 whitespace-nowrap'>Sign Out</span>
               </a>
             </li>
           </ul>

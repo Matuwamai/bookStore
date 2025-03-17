@@ -1,8 +1,15 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Loading from '../components/Loading';
 import ErrorMessage from '../components/ErrorMessage';
+import { useDispatch, useSelector } from 'react-redux';
+import { register } from '../store/actions/userActions';
+import { useNavigate } from 'react-router';
 
 const SignUp = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { userInfo, loading, error: APIError } = useSelector((state) => state.user);
+
     const [details, setDetails] = useState({
         fullName: '',
         email: '',
@@ -10,7 +17,6 @@ const SignUp = () => {
         phoneNo: '',
         confirmPassword: '',
     });
-    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
     const handleChange = (e) => {
@@ -20,6 +26,12 @@ const SignUp = () => {
             [name]: value,
         }));
     }
+
+    useEffect(() => {
+        if (userInfo) {
+            navigate('/dashboard');
+        }
+    }, [userInfo, navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -32,22 +44,14 @@ const SignUp = () => {
             setError('Passwords do not match');
             return;
         }
-        setIsLoading(true);
-        try {
-            console.log('Sign up user with email:', details.email, 'and password:', details.password);
-        } catch (error) {
-            console.error('Error signing up:', error);
-            setError('Failed to sign up');
-        } finally {
-            setIsLoading(false);
-        }
+        dispatch(register({...details, name: details.fullName, contact: details.phoneNo}));
     }
   return (
     <section className='flex min-h-screen items-center justify-center'>
       <div className='relative md:w-1/2 h-[70vh] md:h-auto flex flex-col items-center md:justify-center bg-white p-4 md:p-8'>
         <h1 className='text-2xl font-semibold mb-4'>Sign Up</h1>
-        {isLoading && <Loading />}
-        {error && <ErrorMessage message={error} />}
+        {loading && <Loading />}
+        {(error || APIError) && <ErrorMessage message={error || APIError} />}
         <div className='mb-4'>
           <p className='text-gray-500'>
             Fill in the form below to create an account.
@@ -131,7 +135,7 @@ const SignUp = () => {
           </div>
           <button
             type='submit'
-            className='bg-gray-900 text-white p-2 rounded w-full'>
+            className='bg-gray-900 text-white p-2 rounded w-full cursor-pointer'>
             Submit
           </button>
         </form>

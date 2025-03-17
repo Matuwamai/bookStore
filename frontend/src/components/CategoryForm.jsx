@@ -1,13 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ErrorMessage from "./ErrorMessage";
 import Loading from "./Loading";
+import { useSelector } from "react-redux";
 
 const CategoryForm = ({ title, submitForm }) => {
+  const {
+    loading,
+    error: APIError,
+    success,
+  } = useSelector((state) => state.category);
   const [details, setDetails] = useState({
-    title: "",
+    name: "",
     description: "",
   });
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const handleChange = (e) => {
@@ -21,38 +26,40 @@ const CategoryForm = ({ title, submitForm }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setError(null);
-    if (!details.title || !details.description) {
+    if (!details.name || !details.description) {
       setError("Please fill in all fields");
       return;
     }
-    setLoading(true);
-    try {
-      submitForm(details);
-    } catch (error) {
-      console.error("Error creating category:", error);
-      setError("Failed to create category");
-    } finally {
-      setLoading(false);
-    }
+    submitForm(details);
   };
+
+  useEffect(() => {
+    if (success || APIError) {
+      setDetails({
+        name: "",
+        description: "",
+      });
+    }
+  }, [success, APIError]);
+
   return (
     <div className='flex flex-col'>
       <h6 className='text-xl font-semibold my-auto'>{title}</h6>
       <form action='' onSubmit={handleSubmit}>
-        {error && <ErrorMessage message={error} />}
+        {(error || APIError) && <ErrorMessage message={error || APIError} />}
         {loading && <Loading />}
         <div className='mb-4'>
           <label
-            htmlFor='title'
+            htmlFor='name'
             className='block text-sm font-medium text-gray-700'>
             Title
           </label>
           <input
             type='text'
-            name='title'
-            value={details.title}
+            name='name'
+            value={details.name}
             onChange={handleChange}
-            id='title'
+            id='name'
             className='mt-1 p-2 border border-gray-300 rounded w-full'
           />
         </div>

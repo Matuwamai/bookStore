@@ -8,12 +8,9 @@ import subjectRoutes from "./routes/subjects.js";
 import discountRoutes from "./routes/discount.js"
 import orderRoutes from "./routes/orders.js";
 
-
-
 dotenv.config();
 const app = express();
 app.use(cors());
-dotenv.config();
 
 app.use(express.json());
 app.use("/api/users", userRoutes);

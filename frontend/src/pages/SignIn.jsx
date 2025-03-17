@@ -1,32 +1,32 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Loading from "../components/Loading";
 import ErrorMessage from "../components/ErrorMessage";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../store/actions/userActions";
+import { useNavigate } from "react-router";
 
 export default function SignIn() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { loading, error: APIError, userInfo } = useSelector((state) => state.user);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(null)
         if (!email || !password) {
             setError("Please fill in all fields");
             return;
         }
-        setIsLoading(true);
-        try {
-            // Call the API to sign in the user
-            console
-            .log("Sign in user with email:", email, "and password:", password);
-        } catch (error) {
-            console.error("Error signing in:", error);
-            setError("Failed to sign in");
-        }finally {
-            setIsLoading(false);
-        }
+       dispatch(login({ email, password }))
     }
+
+    useEffect(() => {
+        if (userInfo) {
+            navigate("/dashboard");
+        }
+    }, [userInfo, navigate]);
 
 
   return (
@@ -55,8 +55,8 @@ export default function SignIn() {
       {/* Right Side: Sign-In Form */}
       <div className='relative md:w-1/2 h-[70vh] md:h-auto flex flex-col items-center md:justify-center bg-white p-4 md:p-8'>
         <h1 className='text-2xl font-semibold mb-4'>Sign In</h1>
-        {isLoading && <Loading />}
-        {error && (<ErrorMessage message={error} />)}
+        {loading && <Loading />}
+        {(error || APIError ) && (<ErrorMessage message={error || APIError} />)}
         <div className='mb-4'>
           <p className='text-gray-500'>
             Sign in to your account to manage your store

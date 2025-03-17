@@ -1,12 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PageHeaderWithSearch from "../../components/PageHeaderWithSearch";
 import CategoryForm from "../../components/CategoryForm";
 import CategoryTable from "../../components/CategoryTable";
+import { useDispatch, useSelector } from "react-redux";
+import { createCategory, fetchCategories } from "../../store/actions/categoryActions";
 
 const SubjectsPage = () => {
+  const dispatch = useDispatch();
   const saveSubject = (subjectData) => {
-    console.log(subjectData);
+    dispatch(createCategory(subjectData, "subject"))
   }
+
+    const { success, subjects } = useSelector((state) => state.category);
+
+
+    useEffect(() => {
+      dispatch(fetchCategories("subject"));
+    }, [dispatch, success]);
   return (
     <div>
       <PageHeaderWithSearch
@@ -19,7 +29,7 @@ const SubjectsPage = () => {
         </div>
         <div className='col-span-2'>
           <h6 className='text-md font-semibold mb-3'>Subject Categories</h6>
-          <CategoryTable />
+          <CategoryTable data={subjects} />
         </div>
       </div>
     </div>

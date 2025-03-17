@@ -1,12 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PageHeaderWithSearch from "../../components/PageHeaderWithSearch";
 import CategoryForm from "../../components/CategoryForm";
 import CategoryTable from "../../components/CategoryTable";
+import { useDispatch, useSelector } from "react-redux";
+import { createCategory, fetchCategories } from "../../store/actions/categoryActions";
 
 const ClassesPage = () => {
+  const dispatch = useDispatch();
+  const {success, classes} = useSelector((state) => state.category)
   const saveClass = (classData) => {
-    console.log(classData);
+    dispatch(createCategory(classData, "class"))
   };
+
+  useEffect(() => {
+      dispatch(fetchCategories("class"))
+  }, [dispatch, success])
   return (
     <div>
       <PageHeaderWithSearch
@@ -22,7 +30,7 @@ const ClassesPage = () => {
         </div>
         <div className='col-span-2'>
           <h6 className='text-md font-semibold mb-3'>Class Categories</h6>
-          <CategoryTable />
+          <CategoryTable data={classes} />
         </div>
       </div>
     </div>
