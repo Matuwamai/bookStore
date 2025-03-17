@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 export const createBook = async (req, res) => {
   try {
-    const { title, author, price, stock, wholesale, classId, subjectId } = req.body;
+    const { title, author, price, stock, image, description, wholesale, classId, subjectId } = req.body;
 
     // Validate classId and subjectId
     const classExists = await prisma.class.findUnique({
@@ -27,6 +27,8 @@ export const createBook = async (req, res) => {
         price,
         stock,
         wholesale,
+        description,
+        imageUrl: image,
         classId,
         subjectId,
       },

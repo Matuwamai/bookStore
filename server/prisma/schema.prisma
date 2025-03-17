@@ -19,18 +19,20 @@ model User {
 }
 
 model Book {
-  id         Int         @id @default(autoincrement())
-  title      String
-  author     String
-  price      Float
-  stock      Int
-  wholesale  Boolean     @default(false)
-  classId    Int
-  subjectId  Int
-  class      Class       @relation(fields: [classId], references: [id])
-  subject    Subject     @relation(fields: [subjectId], references: [id])
-  discounts  Discount[]
-  orderItems OrderItem[]
+  id          Int         @id @default(autoincrement())
+  title       String
+  author      String
+  price       Float
+  stock       Int
+  wholesale   Boolean     @default(false)
+  classId     Int
+  subjectId   Int
+  description String?
+  imageUrl    String      @default("https://via.placeholder.com/150")
+  class       Class       @relation(fields: [classId], references: [id])
+  subject     Subject     @relation(fields: [subjectId], references: [id])
+  discounts   Discount[]
+  orderItems  OrderItem[]
 
   @@index([classId], map: "Book_classId_fkey")
   @@index([subjectId], map: "Book_subjectId_fkey")
