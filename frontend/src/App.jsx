@@ -8,24 +8,28 @@ import CustomersPage from "./pages/customers/CustomersPage"
 import ClassesPage from "./pages/classes/ClassesPage"
 import SubjectsPage from "./pages/subjects/SubjectsPage"
 import OrdersPage from "./pages/orders/OrdersPage"
+import SignIn from "./pages/SignIn"
+import SignUp from "./pages/SignUp"
 
 const App = () => {
   return (
     <Router>
       <Routes>
+        <Route path='/sign-in' element={<SignIn />} />
+        <Route path='/sign-up' element={<SignUp />} />
         <Route element={<DashboardLayout />}>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/products" element={<ProductsPage />} />
-          <Route path="/products/new" element={<NewProductPage />} />
-          <Route path="/products/:id" element={<ProductDetailsPage />} />
-          <Route path="/orders" element={<OrdersPage />} />
-          <Route path="/customers" element={<CustomersPage />} />
-          <Route path="/classes" element={<ClassesPage />} />
-          <Route path="/subjects" element={<SubjectsPage />} />
+          <Route path='/' element={<Dashboard />} />
+          <Route path='/products' element={<ProductsPage />} />
+          <Route path='/products/new' element={<NewProductPage />} />
+          <Route path='/products/:id' element={<ProductDetailsPage />} />
+          <Route path='/orders' element={<OrdersPage />} />
+          <Route path='/customers' element={<CustomersPage />} />
+          <Route path='/classes' element={<ClassesPage />} />
+          <Route path='/subjects' element={<SubjectsPage />} />
         </Route>
       </Routes>
     </Router>
-  )
+  );
 }
 
 export default App
