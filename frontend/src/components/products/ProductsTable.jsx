@@ -10,10 +10,10 @@ const columns = [
     width: 100,
     renderCell: (params) => (
       <div class='flex items-center'>
-        <div class='relative inline-block shrink-0 rounded-2xl me-3'>
+        <div class='relative inline-block shrink-0 rounded-lg me-3'>
           <img
             src='https://raw.githubusercontent.com/Loopple/loopple-public-assets/main/riva-dashboard-tailwind/img/img-49-new.jpg'
-            class='w-[50px] h-[50px] inline-block shrink-0 rounded-2xl'
+            class='w-[50px] h-[40px] inline-block shrink-0 rounded-lg'
             alt=''
           />
         </div>

@@ -18,8 +18,8 @@ const SideBar = ({children}) => {
           viewBox='0 0 20 20'
           xmlns='http://www.w3.org/2000/svg'>
           <path
-            clip-rule='evenodd'
-            fill-rule='evenodd'
+            clipRule='evenodd'
+            fillRule='evenodd'
             d='M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z'></path>
         </svg>
       </button>
@@ -48,7 +48,7 @@ const SideBar = ({children}) => {
             </li>
             <li>
               <Link
-                href='/orders'
+                to='/orders'
                 className='flex items-center p-2 text-white hover:text-gray-900 rounded-lg hover:bg-gray-100 group'>
                 <svg
                   className='shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white'
@@ -86,9 +86,9 @@ const SideBar = ({children}) => {
                   viewBox='0 0 10 6'>
                   <path
                     stroke='currentColor'
-                    stroke-linecap='round'
-                    stroke-linejoin='round'
-                    stroke-width='2'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth='2'
                     d='m1 1 4 4 4-4'
                   />
                 </svg>
@@ -142,7 +142,7 @@ const SideBar = ({children}) => {
             </li>
             <li>
               <Link
-                href='/customers'
+                to='/customers'
                 className='flex items-center p-2 text-white hover:text-gray-900 rounded-lg hover:bg-gray-100 group'>
                 <svg
                   className='shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white'
@@ -167,9 +167,9 @@ const SideBar = ({children}) => {
                   viewBox='0 0 18 16'>
                   <path
                     stroke='currentColor'
-                    stroke-linecap='round'
-                    stroke-linejoin='round'
-                    stroke-width='2'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth='2'
                     d='M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3'
                   />
                 </svg>
@@ -194,8 +194,8 @@ const SideBar = ({children}) => {
                 viewBox='0 0 20 20'
                 xmlns='http://www.w3.org/2000/svg'>
                 <path
-                  clip-rule='evenodd'
-                  fill-rule='evenodd'
+                  clipRule='evenodd'
+                  fillRule='evenodd'
                   d='M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z'></path>
               </svg>
             </button>
