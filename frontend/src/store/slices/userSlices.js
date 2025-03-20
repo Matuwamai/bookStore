@@ -31,7 +31,7 @@ export const userSlice = createSlice({
       state.error = action.payload;
     },
     logoutUser: (state) => {
-      state.userInfo = {};
+      state.userInfo = null;
     },
     registerStart: (state) => {
       state.loading = true;
