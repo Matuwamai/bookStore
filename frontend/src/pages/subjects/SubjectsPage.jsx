@@ -25,7 +25,10 @@ const SubjectsPage = () => {
       />
       <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 border-t border-gray-200 pt-4'>
         <div className='col-span-1'>
-          <CategoryForm title='Add New Subject Category' submitForm={saveSubject} />
+          <CategoryForm
+            title='Add New Subject Category'
+            submitForm={saveSubject}
+          />
         </div>
         <div className='col-span-2'>
           <h6 className='text-md font-semibold mb-3'>Subject Categories</h6>

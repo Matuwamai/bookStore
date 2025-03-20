@@ -42,11 +42,11 @@ const CustomersPage = () => {
     { id: 4, fullName: 'Bob Brown', phoneNo: '111-222-3333', email: 'bob@example.com', address: '101 Pine St' },
   ];
   return (
-    <div>
+    <div className=''>
       <PageHeaderWithSearch title='Customers' subtitle='All customers' search />
       <Table columns={columns} rows={rows} />
     </div>
-  )
+  );
 }
 
 export default CustomersPage

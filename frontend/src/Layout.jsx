@@ -7,9 +7,9 @@ export default function DashboardLayout() {
   const { userInfo } = useSelector((state) => state.user);
   if (userInfo?.token) {
     return (
-        <SideBar>
-            <Outlet />
-        </SideBar>
+      <SideBar>
+        <Outlet />
+      </SideBar>
     );
   }
 

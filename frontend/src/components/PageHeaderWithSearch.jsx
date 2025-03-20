@@ -4,12 +4,8 @@ const PageHeaderWithSearch = ({title, subtitle, search=false}) => {
   return (
     <div className='w-full flex flex-col md:flex-row md:justify-between md:items-center mb-3 my-3 space-y-2 md:space-y-0'>
       <div>
-        <h2 className='text-lg font-semibold text-gray-900'>
-          {title}
-        </h2>
-        <p className='text-slate-500'>
-          {subtitle}
-        </p>
+        <h2 className='text-lg font-semibold text-gray-900'>{title}</h2>
+        <p className='text-slate-500'>{subtitle}</p>
       </div>
       {search && (
         <div className='flex space-x-4 items-center md:w-1/2'>

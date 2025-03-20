@@ -17,6 +17,7 @@ export const register = (details) => async (dispatch) => {
   dispatch(registerStart());
   try {
     const { data } = await axios.post(`${BASE_URL}/users/register`, details);
+    console.log(data);
     dispatch(registerSuccess(data));
   } catch (err) {
     dispatch(
