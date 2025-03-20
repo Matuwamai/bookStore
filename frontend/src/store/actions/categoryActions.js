@@ -1,4 +1,3 @@
-import axios from "axios";
 import {
   createFail,
   createStart,
@@ -9,14 +8,15 @@ import {
   fetchSubjectsSuccess,
 } from "../slices/categorySlices";
 import { BASE_URL } from "../../base_url";
+import api from "../../lib/api";
 
 export const createCategory = (details, type) => async (dispatch) => {
   dispatch(createStart());
   try {
     if (type === "class") {
-      await axios.post(`${BASE_URL}/classes/`, details);
+      await api.post(`${BASE_URL}/classes/`, details);
     } else if (type === "subject") {
-      await axios.post(`${BASE_URL}/subjects/`, details);
+      await api.post(`${BASE_URL}/subjects/`, details);
     }
     dispatch(createSuccess());
   } catch (err) {
@@ -29,10 +29,10 @@ export const fetchCategories = (type) => async (dispatch) => {
   dispatch(fetchCategoriesStart());
   try {
     if (type === "class") {
-      const { data } = await axios.get(`${BASE_URL}/classes/`);
+      const { data } = await api.get(`${BASE_URL}/classes/`);
       dispatch(fetchClassesSuccess(data));
     } else if (type === "subject") {
-      const { data } = await axios.get(`${BASE_URL}/subjects/`);
+      const { data } = await api.get(`${BASE_URL}/subjects/`);
       dispatch(fetchSubjectsSuccess(data));
     }
   } catch (err) {

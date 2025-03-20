@@ -16,6 +16,10 @@ model User {
   contact   String
   orders    Order[]
   discounts Discount[] // One user can have multiple discounts
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@map("users")
 }
 
 model Book {
@@ -33,9 +37,12 @@ model Book {
   subject     Subject     @relation(fields: [subjectId], references: [id])
   discounts   Discount[]
   orderItems  OrderItem[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 
   @@index([classId], map: "Book_classId_fkey")
   @@index([subjectId], map: "Book_subjectId_fkey")
+  @@map("books")
 }
 
 model Class {
@@ -43,6 +50,10 @@ model Class {
   name        String  @unique
   description String?
   books       Book[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("classes")
 }
 
 model Subject {
@@ -50,6 +61,10 @@ model Subject {
   name        String  @unique
   description String?
   books       Book[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("subjects")
 }
 
 enum DiscountType {
@@ -66,8 +81,11 @@ model Discount {
   validUntil DateTime
   user       User?         @relation(fields: [userId], references: [id]) // Fix: Add relation to User
   book       Book?         @relation(fields: [bookId], references: [id])
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
 
   @@index([bookId], map: "Discount_bookId_fkey")
+  @@map("discounts")
 }
 
 model Order {
@@ -77,8 +95,11 @@ model Order {
   orderDate DateTime    @default(now())
   user      User        @relation(fields: [userId], references: [id])
   items     OrderItem[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
 
   @@index([userId], map: "Order_userId_fkey")
+  @@map("orders")
 }
 
 model OrderItem {
@@ -88,9 +109,12 @@ model OrderItem {
   quantity Int
   book     Book  @relation(fields: [bookId], references: [id])
   order    Order @relation(fields: [orderId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([bookId], map: "OrderItem_bookId_fkey")
   @@index([orderId], map: "OrderItem_orderId_fkey")
+  @@map("order_items")
 }
 
 enum Role {
