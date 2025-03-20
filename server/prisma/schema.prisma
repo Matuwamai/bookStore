@@ -27,7 +27,7 @@ model Book {
   wholesale   Boolean     @default(false)
   classId     Int
   subjectId   Int
-  description String?
+  description String?     @db.Text
   imageUrl    String      @default("https://via.placeholder.com/150")
   class       Class       @relation(fields: [classId], references: [id])
   subject     Subject     @relation(fields: [subjectId], references: [id])

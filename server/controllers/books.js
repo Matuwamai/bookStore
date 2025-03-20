@@ -4,15 +4,15 @@ const prisma = new PrismaClient();
 
 export const createBook = async (req, res) => {
   try {
-    const { title, author, price, stock, image, description, wholesale, classId, subjectId } = req.body;
+    const { title, author, price, stock, imageUrl, description, wholesale, classId, subjectId } = req.body;
 
     // Validate classId and subjectId
     const classExists = await prisma.class.findUnique({
-      where: { id: classId },
+      where: { id: Number(classId) },
     });
 
     const subjectExists = await prisma.subject.findUnique({
-      where: { id: subjectId },
+      where: { id: Number(subjectId) },
     });
 
     if (!classExists || !subjectExists) {
@@ -28,9 +28,9 @@ export const createBook = async (req, res) => {
         stock,
         wholesale,
         description,
-        imageUrl: image,
-        classId,
-        subjectId,
+        imageUrl,
+        classId: Number(classId),
+        subjectId: Number(subjectId)
       },
     });
 
