@@ -16,7 +16,7 @@ const ProductCard = ({product}) => {
     }
 
     const handleAddToCart = () => {
-        dispatch(addItemToCart({id: product.id, quantity: qty}));
+        dispatch(addItemToCart({...product, quantity: qty}));
     }
   return (
     <div class='bg-white rounded-lg shadow-md overflow-hidden max-w-sm w-full relative'>

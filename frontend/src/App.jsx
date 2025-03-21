@@ -13,6 +13,8 @@ import SignUp from "./pages/SignUp";
 import HomePage from "./pages/HomePage";
 import CartPage from "./pages/CartPage";
 import ClientLayout from "./ClientLayout";
+import ShopPage from "./pages/ShopPage";
+import CheckoutPage from "./pages/CheckoutPage";
 
 const App = () => {
   return (
@@ -23,6 +25,8 @@ const App = () => {
         <Route element={<ClientLayout />}>
           <Route path='/' element={<HomePage />} />
           <Route path='/cart' element={<CartPage />} />
+          <Route path='/shop' element={<ShopPage />} />
+          <Route path='/checkout' element={<CheckoutPage />} />
         </Route>
         <Route element={<DashboardLayout />}>
           <Route path='/dashboard' element={<Dashboard />} />
