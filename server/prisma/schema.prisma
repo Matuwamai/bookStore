@@ -24,7 +24,7 @@ model User {
 
 model Book {
   id          Int         @id @default(autoincrement())
-  title       String
+  title       String    @unique
   author      String
   price       Float
   stock       Int
@@ -42,6 +42,7 @@ model Book {
 
   @@index([classId], map: "Book_classId_fkey")
   @@index([subjectId], map: "Book_subjectId_fkey")
+  @@index([title], map: "Book_title_key")
   @@map("books")
 }
 

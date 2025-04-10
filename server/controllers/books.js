@@ -19,6 +19,14 @@ export const createBook = async (req, res) => {
       return res.status(400).json({ message: "Invalid classId or subjectId" });
     }
 
+    const existingBook = await prisma.book.findFirst({
+      where: { title },
+    });
+
+    if (existingBook) {
+      return res.status(400).json({ message: "Book already exists" });
+    }
+
     // Create the book
     const book = await prisma.book.create({
       data: {
@@ -58,10 +66,10 @@ export const getBooks = async (req, res) => {
 
 export const getBookById = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { name } = req.params;
     
     const book = await prisma.book.findUnique({
-      where: { id: Number(id) },
+      where: { title: name },
       include: { class: true, subject: true },
     });
 

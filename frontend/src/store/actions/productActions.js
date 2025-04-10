@@ -24,10 +24,10 @@ export const fetchProducts = () => async (dispatch) => {
   }
 };
 
-export const fetchProductDetails = (id) => async (dispatch) => {
+export const fetchProductDetails = (name) => async (dispatch) => {
     dispatch(fetchProductDetailsStart());
     try {
-        const { data } = await api.get(`${BASE_URL}/books/${id}`);
+        const { data } = await api.get(`${BASE_URL}/books/${name}`);
         dispatch(fetchProductDetailsSuccess(data));
     } catch (err) {
         const errMsg = err.response ? err.response.data.message : err.message;

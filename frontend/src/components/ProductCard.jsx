@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { MinusIcon, PlusIcon } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { addItemToCart } from "../store/slices/cartSlices";
+import {Link} from 'react-router-dom';
 
 const ProductCard = ({product}) => {
     const dispatch = useDispatch();
@@ -34,7 +35,9 @@ const ProductCard = ({product}) => {
       <div class='p-4 mb-10'>
         <div class='flex justify-between items-start mb-2'>
           <div>
-            <h6 class='font-semibold text-gray-600 mb-1'>{product.title}</h6>
+            <Link className='hover:text-blue-900' to={`/shop/products/${product.title.trim().toLowerCase().replace(/\s/g, "_")}`}>
+              <h6 class='font-semibold text-gray-600 mb-1'>{product.title}</h6>
+            </Link>
             <p class='text-sm text-gray-600'>{product.subject.name}</p>
           </div>
         </div>

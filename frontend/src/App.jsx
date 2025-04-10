@@ -27,12 +27,12 @@ const App = () => {
           <Route path='/cart' element={<CartPage />} />
           <Route path='/shop' element={<ShopPage />} />
           <Route path='/checkout' element={<CheckoutPage />} />
+          <Route path='/shop/products/:name' element={<ProductDetailsPage />} />
         </Route>
         <Route element={<DashboardLayout />}>
           <Route path='/dashboard' element={<Dashboard />} />
           <Route path='/products' element={<ProductsPage />} />
           <Route path='/products/new' element={<NewProductPage />} />
-          <Route path='/products/:id' element={<ProductDetailsPage />} />
           <Route path='/orders' element={<OrdersPage />} />
           <Route path='/customers' element={<CustomersPage />} />
           <Route path='/classes' element={<ClassesPage />} />
