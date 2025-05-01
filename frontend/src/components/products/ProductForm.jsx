@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { uploadImage } from "../../firebase";
 import Loading from "../Loading";
 import ErrorMessage from "../ErrorMessage";
 import { useDispatch, useSelector } from "react-redux";
-import { createProduct } from "../../store/actions/productActions";
 import { fetchCategories } from "../../store/actions/categoryActions";
 import { toast } from "react-toastify";
+import { BASE_URL } from "../../base_url";
 
 const ProductForm = () => {
   const dispatch = useDispatch();
-  const { loading, error, success } = useSelector((state) => state.product);
+  const {  error, success } = useSelector((state) => state.product);
+  // const {loading, setLoading} = useState()
   const { classes, subjects } = useSelector((state) => state.category);
   const [details, setDetails] = useState({
     title: "",
@@ -19,13 +19,13 @@ const ProductForm = () => {
     author: "",
   });
   const [uploading, setUploading] = useState(false);
+  const [loading, setLoading] = useState();
 
   const [image, setImage] = useState(null);
 
   const [isWholesale, setIsWholesale] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedClass, setSelectedClass] = useState("");
-  const [progress, setProgress] = useState(0);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,9 +34,11 @@ const ProductForm = () => {
       [name]: value,
     }));
   };
+ 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
     if (!details.title || !details.price || !details.description) {
       toast.error("Please fill all fields");
       return;
@@ -45,32 +47,56 @@ const ProductForm = () => {
       toast.error("Please upload an image");
       return;
     }
-
+  
     if (!selectedClass || !selectedSubject) {
       toast.error("Please select class and subject");
       return;
     }
-    
+  
     try {
       setUploading(true);
-      const res = await uploadImage(image, "products", setProgress);
-      setUploading(false);
-      console.log(progress);
-      const data = {
-        ...details,
-        price: Number(details.price),
-        stock: Number(details.stock),
-        imageUrl: res,
-        wholesale: isWholesale,
-        classId: selectedClass,
-        subjectId: selectedSubject,
-      };
-      dispatch(createProduct(data));
+  
+      const formData = new FormData();
+      formData.append("title", details.title);
+      formData.append("author", details.author);
+      formData.append("price", details.price);
+      formData.append("stock", details.stock);
+      formData.append("description", details.description);
+      formData.append("wholesale", isWholesale);
+      formData.append("classId", selectedClass);
+      formData.append("subjectId", selectedSubject);
+      formData.append("image", image); 
+      const response = await fetch(`${BASE_URL}/books/`, {
+        method: "POST",
+        body: formData,
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        toast.success("Product added successfully");
+        setDetails({
+          title: "",
+          price: 0,
+          description: "",
+          stock: 0,
+          author: "",
+        });
+        setImage(null);
+        setSelectedClass("");
+        setSelectedSubject("");
+      } else {
+        toast.error(result.message || "Something went wrong");
+      }
     } catch (error) {
-      console.error("Error uploading image:", error);
-      toast.error("Error uploading image");
+      // console.error("Error submitting form:", error);
+      toast.error("Error uploading product");
+    } finally {
+      setUploading(false);
+      setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     if (success) {
@@ -85,7 +111,8 @@ const ProductForm = () => {
       setImage(null);
       setSelectedClass("");
       setSelectedSubject("");
-    }
+    } 
+    
   }, [success]);
 
   useEffect(() => {
@@ -98,7 +125,7 @@ const ProductForm = () => {
       <div className='w-2/3 bg-white p-8 rounded-lg border-2 border-dashed border-gray-300'>
         <div className='flex justify-between items-center mb-4'>
           <h1 className='text-2xl font-bold my-auto'>Add Product</h1>
-          <div class='flex items-center gap-2'>
+          <div className='flex items-center gap-2'>
             <input
               id='isWholesale'
               name='isWholesale'
