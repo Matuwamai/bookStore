@@ -15,7 +15,7 @@ model User {
   role      Role       @default(CUSTOMER)
   contact   String
   orders    Order[]
-  discounts Discount[] // One user can have multiple discounts
+  discounts Discount[] 
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
@@ -76,11 +76,11 @@ enum DiscountType {
 model Discount {
   id         Int           @id @default(autoincrement())
   type       Discount_type
-  userId     Int? // Foreign key for User (optional)
-  bookId     Int? // Foreign key for Book (optional)
+  userId     Int? 
+  bookId     Int? 
   amount     Float
   validUntil DateTime
-  user       User?         @relation(fields: [userId], references: [id]) // Fix: Add relation to User
+  user       User?         @relation(fields: [userId], references: [id]) 
   book       Book?         @relation(fields: [bookId], references: [id])
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt

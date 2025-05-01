@@ -4,9 +4,13 @@ const prisma = new PrismaClient();
 
 export const createBook = async (req, res) => {
   try {
-    const { title, author, price, stock, imageUrl, description, wholesale, classId, subjectId } = req.body;
+    const { title, author, price, stock, description, wholesale, classId, subjectId } = req.body;
+    if (!req.file) {
+      return res.status(400).json({ message: "Image file is required" });
+    }
 
-    // Validate classId and subjectId
+    const imageUrl = `/uploads/${req.file.filename}`; 
+
     const classExists = await prisma.class.findUnique({
       where: { id: Number(classId) },
     });
@@ -27,18 +31,17 @@ export const createBook = async (req, res) => {
       return res.status(400).json({ message: "Book already exists" });
     }
 
-    // Create the book
     const book = await prisma.book.create({
       data: {
         title,
         author,
-        price,
-        stock,
-        wholesale,
+        price: parseFloat(price),
+        stock: parseInt(stock),
+        wholesale: Boolean(wholesale),
         description,
         imageUrl,
         classId: Number(classId),
-        subjectId: Number(subjectId)
+        subjectId: Number(subjectId),
       },
     });
 
@@ -48,6 +51,7 @@ export const createBook = async (req, res) => {
     res.status(500).json({ message: "Error creating book" });
   }
 };
+
 export const getBooks = async (req, res) => {
   try {
     const books = await prisma.book.findMany({
