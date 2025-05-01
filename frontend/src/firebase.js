@@ -86,7 +86,6 @@ export const uploadMultipleImages = async (
   const downloadURLs = [];
 
   return new Promise((resolve, reject) => {
-    // Map each file to an upload promise
     const uploadPromises = files.map((file) =>
       uploadImage(file, path, (fileProgress) => {
         uploadedCount += fileProgress / totalFiles;
@@ -95,8 +94,6 @@ export const uploadMultipleImages = async (
         downloadURLs.push(url);
       })
     );
-
-    // Use Promise.all to wait for all uploads to complete
     Promise.all(uploadPromises)
       .then(() => resolve(downloadURLs))
       .catch((error) => {

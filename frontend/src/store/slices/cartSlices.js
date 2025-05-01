@@ -73,8 +73,6 @@ const cartSlice = createSlice({
 export const { addItemToCart, removeItemFromCart, handleCartQty, resetCart } =
   cartSlice.actions;
 export default cartSlice.reducer;
-
-// Selector to calculate the subtotal
 export const selectCartSubtotal = (state) => {
  let subtotal = state.cart.cartItems.reduce(
     (subtotal, item) => subtotal + item.price * item.quantity,
