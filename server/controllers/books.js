@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+const BASE_URL = process.env.BASE_URL || "http://localhost:5000";
 
 const prisma = new PrismaClient();
 
@@ -61,7 +62,12 @@ export const getBooks = async (req, res) => {
       },
     });
 
-    res.status(200).json(books);
+    const updatedBooks = books.map(book => ({
+      ...book,
+      imageUrl: `${BASE_URL}${book.imageUrl}`,
+    }));
+
+    res.status(200).json(updatedBooks);
   } catch (error) {
     console.error("Error fetching books:", error);
     res.status(500).json({ message: "Error fetching books" });
@@ -80,6 +86,7 @@ export const getBookById = async (req, res) => {
     if (!book) {
       return res.status(404).json({ message: "Book not found" });
     }
+    book.imageUrl = `${BASE_URL}${book.imageUrl}`;
 
     res.status(200).json(book);
   } catch (error) {

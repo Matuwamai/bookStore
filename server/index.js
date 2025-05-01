@@ -19,7 +19,7 @@ app.use("/api/classes", classRoutes);
 app.use("/api/subjects", subjectRoutes);
 app.use("/api/discounts", discountRoutes);
 app.use("/api/orders", orderRoutes);
-
+app.use("/uploads", express.static("uploads"));
 
 
 
