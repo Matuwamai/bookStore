@@ -55,7 +55,7 @@ const OrderDetails = () => {
 
   const saveDeliveryInfo = async () => {
     try {
-      const response = await axios.patch(`${BASE_URL}/orders/${id}`, {
+      const response = await axios.patch(`${BASE_URL}/orders/update/${id}`, {
         deliveryInfo: deliveryInfo
       });
       setOrder(response.data);
@@ -141,7 +141,7 @@ const OrderDetails = () => {
                     <input
                       type="text"
                       name="carrierName"
-                      value={deliveryInfo.carrierName}
+                      value={order.delivery?.carrierName}
                       onChange={handleInputChange}
                       className="mt-1 block w-full border rounded p-2"
                     />
@@ -151,7 +151,7 @@ const OrderDetails = () => {
                     <input
                       type="text"
                       name="driverName"
-                      value={deliveryInfo.driverName}
+                      value={order.delivery?.driverName}
                       onChange={handleInputChange}
                       className="mt-1 block w-full border rounded p-2"
                     />
@@ -161,7 +161,7 @@ const OrderDetails = () => {
                     <input
                       type="text"
                       name="driverContact"
-                      value={deliveryInfo.driverContact}
+                      value={order.delivery?.driverContact}
                       onChange={handleInputChange}
                       className="mt-1 block w-full border rounded p-2"
                     />
@@ -171,7 +171,7 @@ const OrderDetails = () => {
                     <input
                       type="text"
                       name="carRegistration"
-                      value={deliveryInfo.carRegistration}
+                      value={order.delivery?.carRegistration}
                       onChange={handleInputChange}
                       className="mt-1 block w-full border rounded p-2"
                     />
@@ -196,22 +196,22 @@ const OrderDetails = () => {
                   <p className="font-medium">Location: {order.deliveryLocation}</p>
                   {deliveryInfo.carrierName && (
                     <p className="mt-2">
-                      <span className="font-medium">Carrier:</span> {deliveryInfo.carrierName}
+                      <span className="font-medium">Carrier:</span> {order.delivery?.carrierName}
                     </p>
                   )}
                   {deliveryInfo.driverName && (
                     <p>
-                      <span className="font-medium">Driver:</span> {deliveryInfo.driverName}
+                      <span className="font-medium">Driver:</span> {order.delivery?.driverName}
                     </p>
                   )}
                   {deliveryInfo.driverContact && (
                     <p>
-                      <span className="font-medium">Driver Contact:</span> {deliveryInfo.driverContact}
+                      <span className="font-medium">Driver Contact:</span> {order.delivery?.driverContact}
                     </p>
                   )}
                   {deliveryInfo.carRegistration && (
                     <p>
-                      <span className="font-medium">Vehicle:</span> {deliveryInfo.carRegistration}
+                      <span className="font-medium">Vehicle:</span> {order.delivery?.carRegistration}
                     </p>
                   )}
                   {order.deliveryNotes && (
