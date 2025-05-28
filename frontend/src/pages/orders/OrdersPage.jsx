@@ -57,7 +57,7 @@ const OrdersPage = () => {
           <tbody className="divide-y divide-gray-200">
             {orders.map((order) => (
               <tr key={order.id} className="hover:bg-gray-50">
-                <td className="py-4 px-4">#{order.id}</td>
+                <td className="py-4 px-4">{order.id}</td>
                 <td className="py-4 px-4">
                   <div>
                     <p className="font-medium">{order.user.name}</p>
@@ -75,7 +75,7 @@ const OrdersPage = () => {
                 <td className="py-4 px-4">
                   <button
                     onClick={() => navigate(`/orders/${order.id}`)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                    className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
                   >
                     View
                   </button>

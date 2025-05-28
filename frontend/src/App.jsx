@@ -15,6 +15,7 @@ import CartPage from "./pages/CartPage";
 import ClientLayout from "./ClientLayout";
 import ShopPage from "./pages/ShopPage";
 import CheckoutPage from "./pages/CheckoutPage";
+import OrderDetails from "./pages/orders/orderDetails";
 
 const App = () => {
   return (
@@ -33,11 +34,16 @@ const App = () => {
           <Route path='/dashboard' element={<Dashboard />} />
           <Route path='/products' element={<ProductsPage />} />
           <Route path='/products/new' element={<NewProductPage />} />
-          <Route path='/orders' element={<OrdersPage />} />
           <Route path='/customers' element={<CustomersPage />} />
           <Route path='/classes' element={<ClassesPage />} />
           <Route path='/subjects' element={<SubjectsPage />} />
+          <Route path='/orders'>
+            <Route index element={<OrdersPage />} />
+            <Route path=':id' element={<OrderDetails />} />
+          </Route>
+           {/* <Route path='/orders' element={<OrdersPage />} /> */}
         </Route>
+        {/* <Route path='/orders/:id' element={<OrderDetails />} /> */}
       </Routes>
     </Router>
   );
