@@ -89,22 +89,7 @@ model Discount {
   @@map("discounts")
 }
 
-model Order {
-  id        Int         @id @default(autoincrement())
-  userId    Int
-  total     Float
-  deliveryLocation String
-  deliveryContact  String
-  deliveryNotes    String?
-  orderDate DateTime    @default(now())
-  user      User        @relation(fields: [userId], references: [id])
-  items     OrderItem[]
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
 
-  @@index([userId], map: "Order_userId_fkey")
-  @@map("orders")
-}
 
 model OrderItem {
   id       Int   @id @default(autoincrement())
@@ -122,6 +107,49 @@ model OrderItem {
   @@map("order_items")
 }
 
+model Order {
+  id                Int         @id @default(autoincrement())
+  userId            Int
+  total             Float
+  deliveryLocation  String
+  deliveryContact   String
+  deliveryNotes     String?
+  user              User        @relation(fields: [userId], references: [id])
+  items             OrderItem[]
+  delivery          Delivery?   @relation(fields: [deliveryId], references: [id])
+  deliveryId        Int? @unique
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  @@index([userId], map: "Order_userId_fkey")
+  @@map("orders")
+}
+
+model Delivery {
+  id              Int       @id @default(autoincrement())
+  order           Order?
+  carrierName     String
+  driverName      String
+  driverContact   String
+  carRegistration String
+  scheduledDate   DateTime
+  actualDate      DateTime?
+  status          DeliveryStatus @default(PENDING)
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("deliveries")
+}
+
+enum DeliveryStatus {
+  PENDING
+  ASSIGNED
+  IN_TRANSIT
+  DELIVERED
+  FAILED
+  RETURNED
+}
 enum Role {
   CUSTOMER
   ADMIN
