@@ -93,6 +93,9 @@ model Order {
   id        Int         @id @default(autoincrement())
   userId    Int
   total     Float
+  deliveryLocation String
+  deliveryContact  String
+  deliveryNotes    String?
   orderDate DateTime    @default(now())
   user      User        @relation(fields: [userId], references: [id])
   items     OrderItem[]
@@ -107,6 +110,7 @@ model OrderItem {
   id       Int   @id @default(autoincrement())
   orderId  Int
   bookId   Int
+  price     Int? 
   quantity Int
   book     Book  @relation(fields: [bookId], references: [id])
   order    Order @relation(fields: [orderId], references: [id])
