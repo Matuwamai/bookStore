@@ -40,13 +40,20 @@ export const deleteCustomer = () => async (dispatch, getState) => {
     );
   }
 };
-
 export const login = (details) => async (dispatch) => {
   dispatch(loginStart());
   try {
     const { data } = await axios.post(`${BASE_URL}/users/login`, details);
-    dispatch(loginSuccess(data));
-    localStorage.setItem("userInfo", JSON.stringify(data));
+    console.log('Login API response:', data);
+    
+  
+    const userData = {
+      token: data.token,
+      ...data.user  
+    };
+    
+    dispatch(loginSuccess(userData));
+    localStorage.setItem("userInfo", JSON.stringify(userData));
   } catch (err) {
     const errMsg = err.response ? err.response.data.message : err.message;
     dispatch(loginFail(errMsg || "Invalid credentials!"));
