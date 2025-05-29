@@ -5,8 +5,6 @@ const prisma = new PrismaClient();
 export const createClass = async (req, res) => {
   try {
     const { name, description } = req.body;
-
-    // Check if class already exists
     const existingClass = await prisma.class.findUnique({
       where: { name },
     });
@@ -28,8 +26,6 @@ export const createClass = async (req, res) => {
     res.status(500).json({ message: "Error creating class" });
   }
 };
-
-//  Get all classes
 export const getClasses = async (req, res) => {
   try {
     const classes = await prisma.class.findMany();
@@ -41,13 +37,23 @@ export const getClasses = async (req, res) => {
   }
 };
 
-// / Get a single class by ID
 export const getClassById = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     const classData = await prisma.class.findUnique({
       where: { id: Number(id) },
+      include: {
+        books: {
+          include: {
+            subject: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!classData) {
@@ -61,7 +67,6 @@ export const getClassById = async (req, res) => {
   }
 };
 
-//  Update a class
 export const updateClass = async (req, res) => {
   try {
     const { id } = req.params;
@@ -79,7 +84,6 @@ export const updateClass = async (req, res) => {
   }
 };
 
-//  Delete a class
 export const deleteClass = async (req, res) => {
   try {
     const { id } = req.params;

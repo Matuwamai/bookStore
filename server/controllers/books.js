@@ -115,3 +115,35 @@ export const deleteBook = async (req, res) => {
     res.status(500).json({ message: "Error deleting book" });
   }
 };
+
+export const searchBooks = async (req, res) => {
+  const { query, classId, subjectId } = req.query;
+  
+  try {
+    const where = {};
+    
+    if (query) {
+      where.OR = [
+        { title: { contains: query, mode: 'insensitive' } },
+        { author: { contains: query, mode: 'insensitive' } },
+        { description: { contains: query, mode: 'insensitive' } }
+      ];
+    }
+    
+    if (classId) where.classId = Number(classId);
+    if (subjectId) where.subjectId = Number(subjectId);
+    
+    const books = await prisma.book.findMany({
+      where,
+      include: {
+        class: true,
+        subject: true
+      }
+    });
+    
+    res.json(books);
+  } catch (error) {
+    console.error("Search error:", error);
+    res.status(500).json({ message: "Error searching books" });
+  }
+};

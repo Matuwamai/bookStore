@@ -44,21 +44,44 @@ export const getSubjects = async (req, res) => {
 export const getSubjectById = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     const subject = await prisma.subject.findUnique({
       where: { id: Number(id) },
+      include: {
+        books: {
+          include: {
+            class: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!subject) {
       return res.status(404).json({ message: "Subject not found" });
     }
+    const formattedSubject = {
+      ...subject,
+      books: subject.books.map(book => ({
+        id: book.id,
+        title: book.title,
+        imageUrl: book.imageUrl,
+        class: {
+          name: book.class?.name,
+        },
+      })),
+    };
 
-    res.status(200).json(subject);
+    res.status(200).json(formattedSubject);
   } catch (error) {
     console.error("Error fetching subject:", error);
     res.status(500).json({ message: "Error fetching subject" });
   }
 };
+
 
 export const updateSubject = async (req, res) => {
   try {
