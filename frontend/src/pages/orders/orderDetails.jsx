@@ -16,7 +16,7 @@ const OrderDetails = () => {
     driverContact: '',
     carRegistration: '',
     scheduledDate: "",
-    status: 'Processing'
+    DeliveryStatus: 'Processing'
   });
 
   const handleDateChange = (e) => {
@@ -31,8 +31,6 @@ const OrderDetails = () => {
       try {
         const response = await axios.get(`${BASE_URL}/orders/order/${id}`);
         setOrder(response.data);
-
-        // Initialize delivery info with existing data or defaults
         if (response.data.delivery) {
           setDeliveryInfo({
             carrierName: response.data.delivery.carrierName || '',
@@ -40,7 +38,7 @@ const OrderDetails = () => {
             driverContact: response.data.delivery.driverContact || '',
             carRegistration: response.data.delivery.carRegistration || '',
             scheduledDate: new Date().toISOString().slice(0, 16),
-            status: response.data.status || 'Processing'
+            DeliveryStatus: response.data.status || 'Processing'
           });
         }
         setLoading(false);
@@ -64,30 +62,26 @@ const OrderDetails = () => {
   const handleStatusChange = (e) => {
     setDeliveryInfo(prev => ({
       ...prev,
-      status: e.target.value
+      DeliveryStatus: e.target.value
     }));
   };
 
   const saveDeliveryInfo = async () => {
     try {
       const updatedData = {
-        delivery: {
-          carrierName: deliveryInfo.carrierName,
-          driverName: deliveryInfo.driverName,
-          driverContact: deliveryInfo.driverContact,
-          carRegistration: deliveryInfo.carRegistration,
-          scheduledDate: deliveryInfo.scheduledDate || new Date().toISOString().slice(0, 16)
-        },
-        status: deliveryInfo.status
+        carrierName: deliveryInfo.carrierName,
+        driverName: deliveryInfo.driverName,
+        driverContact: deliveryInfo.driverContact,
+        carRegistration: deliveryInfo.carRegistration,
+        scheduledDate: new Date(deliveryInfo.scheduledDate).toISOString(),
+        DeliveryStatus: deliveryInfo.status
       };
 
       const response = await axios.patch(`${BASE_URL}/orders/update/${id}`, updatedData);
-
-      // Update both the order and deliveryInfo states
       setOrder(prev => ({
         ...prev,
         delivery: response.data.delivery,
-        status: response.data.status
+        DeliveryStatus: response.data.status
       }));
 
       setIsEditing(false);
@@ -121,7 +115,7 @@ const OrderDetails = () => {
           <div className="flex items-center gap-2">
             {isEditing ? (
               <select
-                value={deliveryInfo.status}
+                value={deliveryInfo.DeliveryStatus}
                 onChange={handleStatusChange}
                 className="px-3 py-1 rounded-full text-sm border"
               >
