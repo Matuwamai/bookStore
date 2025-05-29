@@ -23,10 +23,18 @@ export default function SignIn() {
     }
 
     useEffect(() => {
-        if (userInfo) {
-            navigate("/dashboard");
+    if (userInfo) {
+        switch(userInfo.role) {
+            case 'ADMIN':
+                navigate('/admin/dashboard');
+                break;
+          
+            default:
+                navigate('/'); // Default dashboard for other roles
         }
-    }, [userInfo, navigate]);
+    }
+}, [userInfo, navigate]);
+
 
 
   return (

@@ -17,6 +17,9 @@ import ShopPage from "./pages/ShopPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import OrderDetails from "./pages/orders/orderDetails";
 import UserOrderPage from "./pages/orders/userOrders";
+import ProtectedRoute from "./components/routes/ProtectedRoute";
+import RoleBasedRoute from "./components/routes/RoleBasedRoutes";
+import Unauthorized from "./components/routes/Unauthorized";
 
 const App = () => {
   return (
@@ -24,29 +27,32 @@ const App = () => {
       <Routes>
         <Route path='/sign-in' element={<SignIn />} />
         <Route path='/sign-up' element={<SignUp />} />
-        <Route element={<ClientLayout />}>
-          <Route path='/' element={<HomePage />} />
-          <Route path='/cart' element={<CartPage />} />
-          <Route path='/shop' element={<ShopPage />} />
-          <Route path='/checkout' element={<CheckoutPage />} />
-          <Route path='/shop/products/:name' element={<ProductDetailsPage />} />
-        </Route>
-        <Route element={<DashboardLayout />}>
-          <Route path='/dashboard' element={<Dashboard />} />
-          <Route path='/products' element={<ProductsPage />} />
-          <Route path='/products/new' element={<NewProductPage />} />
-          <Route path='/customers' element={<CustomersPage />} />
-          <Route path='/classes' element={<ClassesPage />} />
-          <Route path='/subjects' element={<SubjectsPage />} />
-          <Route path='/orders'>
-            <Route index element={<OrdersPage />} />
-            <Route path=':id' element={<OrderDetails />} />
-          </Route>
-           {/* <Route path='/orders' element={<OrdersPage />} /> */}
-            <Route path='/user' element={<UserOrderPage />} />
+        <Route element={<ProtectedRoute />}>
+          <Route element={<ClientLayout />}>
+            <Route path='/' element={<HomePage />} />
+            <Route path='/cart' element={<CartPage />} />
+            <Route path='/shop' element={<ShopPage />} />
+            <Route path='/checkout' element={<CheckoutPage />} />
+            <Route path='/shop/products/:name' element={<ProductDetailsPage />} />
+            <Route path='my-orders' element={<UserOrderPage />} />
 
+          </Route>
+          <Route element={<DashboardLayout />}>
+            <Route element={<RoleBasedRoute allowedRoles={['ADMIN']} />}>
+              <Route path='/dashboard' element={<Dashboard />} />
+              <Route path='/products' element={<ProductsPage />} />
+              <Route path='/products/new' element={<NewProductPage />} />
+              <Route path='/customers' element={<CustomersPage />} />
+              <Route path='/classes' element={<ClassesPage />} />
+              <Route path='/subjects' element={<SubjectsPage />} />
+              <Route path='/orders'>
+                <Route index element={<OrdersPage />} />
+                <Route path=':id' element={<OrderDetails />} />
+              </Route>
+            </Route>
+          </Route>
         </Route>
-        {/* <Route path='/orders/:id' element={<OrderDetails />} /> */}
+        <Route path="*" element={<Unauthorized/>} />
       </Routes>
     </Router>
   );

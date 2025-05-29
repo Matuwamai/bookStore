@@ -19,8 +19,7 @@ const CustomersPage = () => {
     const fetchCustomers = async () => {
       try {
         const response = await axios.get(`${BASE_URL}/users`);
-        console.log('API Response:', response.data); // Debug log
-        // Ensure we're setting an array
+        console.log('API Response:', response.data); 
         const data = Array.isArray(response.data) ? response.data : [];
         setCustomers(data);
         setLoading(false);
