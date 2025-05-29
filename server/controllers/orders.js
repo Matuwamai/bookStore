@@ -200,7 +200,6 @@ export const getOrderById = async (req, res) => {
     const { id } = req.params;
     console.log(`Fetching order with ID: ${id} (type: ${typeof id})`);
 
-    // Validate ID
     const orderId = parseInt(id);
     if (isNaN(orderId)) {
       console.log('Invalid order ID format');
@@ -244,15 +243,10 @@ export const getOrderById = async (req, res) => {
         }
       },
     });
-
-    console.log('Raw database response:', JSON.stringify(order, null, 2));
-
     if (!order) {
       console.log('Order not found in database');
       return res.status(404).json({ message: 'Order not found' });
     }
-
-    // Verify items separately
     if (order.items && order.items.length === 0) {
       console.log('Order found but has no items');
     } else {
@@ -266,7 +260,6 @@ export const getOrderById = async (req, res) => {
       total: Number(order.total),
     };
 
-    console.log('Formatted order:', JSON.stringify(formattedOrder, null, 2));
     res.status(200).json(formattedOrder);
   } catch (error) {
     console.error("Detailed error:", {
@@ -292,17 +285,13 @@ export const updateOrderDeliveryDetails = async (req, res) => {
       carRegistration,
       scheduledDate,
       status,
-      notes
+      
     } = req.body;
-
-    // Validate required fields
     if (!carrierName || !driverName || !driverContact || !carRegistration || !scheduledDate) {
       return res.status(400).json({
-        message: "All delivery details are required: carrierName, driverName, driverContact, carRegistration, scheduledDate"
+        message: "All delivery details are required: carrierName, driverName,  scheduledDate"
       });
     }
-
-    // Check if order exists
     const existingOrder = await prisma.order.findUnique({
       where: { id: Number(id) },
       include: { delivery: true }
@@ -324,7 +313,6 @@ export const updateOrderDeliveryDetails = async (req, res) => {
           carRegistration,
           scheduledDate: new Date(scheduledDate),
           status: status || existingOrder.delivery.status,
-          notes,
           updatedAt: new Date()
         }
       });
@@ -337,7 +325,6 @@ export const updateOrderDeliveryDetails = async (req, res) => {
           carRegistration,
           scheduledDate: new Date(scheduledDate),
           status: status || 'PENDING',
-          notes,
           order: { connect: { id: Number(id) } }
         }
       });

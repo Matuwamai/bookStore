@@ -94,7 +94,27 @@ export const login = async (req, res) => {
 
 export const listUsers = async (req, res) => {
   try {
-    const users = await prisma.user.findMany();
+    const { role } = req.query;
+    
+    const whereClause = {};
+    if (role) {
+      whereClause.role = role;
+    }
+
+    const users = await prisma.user.findMany({
+      where: whereClause,
+      select: {
+        id: true,
+        name: true,
+        contact: true,
+        email: true,
+        createdAt: true,
+        role:{
+          select:{ CUSTOMER:true}
+        },
+      }
+    });
+    
     res.status(200).json(users);
   } catch (error) {
     console.error("Error fetching users:", error);
