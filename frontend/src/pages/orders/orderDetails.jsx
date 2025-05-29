@@ -15,25 +15,40 @@ const OrderDetails = () => {
     driverName: '',
     driverContact: '',
     carRegistration: '',
+    scheduledDate: "",
     status: 'Processing'
   });
+
+  const handleDateChange = (e) => {
+    setDeliveryInfo(prev => ({
+      ...prev,
+      scheduledDate: e.target.value
+    }));
+  };
 
   useEffect(() => {
     const fetchOrder = async () => {
       try {
         const response = await axios.get(`${BASE_URL}/orders/order/${id}`);
         setOrder(response.data);
-        // Initialize delivery info if it exists
-        if (response.data.deliveryInfo) {
-          setDeliveryInfo(response.data.deliveryInfo);
+
+        // Initialize delivery info with existing data or defaults
+        if (response.data.delivery) {
+          setDeliveryInfo({
+            carrierName: response.data.delivery.carrierName || '',
+            driverName: response.data.delivery.driverName || '',
+            driverContact: response.data.delivery.driverContact || '',
+            carRegistration: response.data.delivery.carRegistration || '',
+            scheduledDate: new Date().toISOString().slice(0, 16),
+            status: response.data.status || 'Processing'
+          });
         }
         setLoading(false);
       } catch (err) {
-        setError(err.message);
+        setError(err.response?.data?.message || err.message || 'Error fetching order');
         setLoading(false);
       }
     };
-        console.log(deliveryInfo)
 
     fetchOrder();
   }, [id]);
@@ -55,13 +70,30 @@ const OrderDetails = () => {
 
   const saveDeliveryInfo = async () => {
     try {
-      const response = await axios.patch(`${BASE_URL}/orders/update/${id}`, {
-        deliveryInfo: deliveryInfo
-      });
-      setOrder(response.data);
+      const updatedData = {
+        delivery: {
+          carrierName: deliveryInfo.carrierName,
+          driverName: deliveryInfo.driverName,
+          driverContact: deliveryInfo.driverContact,
+          carRegistration: deliveryInfo.carRegistration,
+          scheduledDate: deliveryInfo.scheduledDate || new Date().toISOString().slice(0, 16)
+        },
+        status: deliveryInfo.status
+      };
+
+      const response = await axios.patch(`${BASE_URL}/orders/update/${id}`, updatedData);
+
+      // Update both the order and deliveryInfo states
+      setOrder(prev => ({
+        ...prev,
+        delivery: response.data.delivery,
+        status: response.data.status
+      }));
+
       setIsEditing(false);
     } catch (err) {
       console.error('Error updating delivery info:', err);
+      setError(err.response?.data?.message || err.message || 'Error updating order');
     }
   };
 
@@ -71,7 +103,7 @@ const OrderDetails = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <button 
+      <button
         onClick={() => navigate(-1)}
         className="mb-4 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
       >
@@ -99,13 +131,12 @@ const OrderDetails = () => {
                 <option value="Delivered">Delivered</option>
               </select>
             ) : (
-              <span className={`px-3 py-1 rounded-full text-sm ${
-                deliveryInfo.status === 'Delivered' ? 'bg-green-100 text-green-800' :
-                deliveryInfo.status === 'In Transit' ? 'bg-yellow-100 text-yellow-800' :
-                deliveryInfo.status === 'Dispatched' ? 'bg-blue-100 text-blue-800' :
-                'bg-gray-100 text-gray-800'
-              }`}>
-                {deliveryInfo.status || 'Processing'}
+              <span className={`px-3 py-1 rounded-full text-sm ${order.status === 'Delivered' ? 'bg-green-100 text-green-800' :
+                  order.status === 'In Transit' ? 'bg-yellow-100 text-yellow-800' :
+                    order.status === 'Dispatched' ? 'bg-blue-100 text-blue-800' :
+                      'bg-gray-100 text-gray-800'
+                }`}>
+                {order.status || 'Processing'}
               </span>
             )}
           </div>
@@ -125,7 +156,7 @@ const OrderDetails = () => {
             <h2 className="text-lg font-semibold mb-2 flex justify-between items-center">
               Delivery Information
               {!isEditing && (
-                <button 
+                <button
                   onClick={() => setIsEditing(true)}
                   className="text-sm bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-800"
                 >
@@ -141,7 +172,7 @@ const OrderDetails = () => {
                     <input
                       type="text"
                       name="carrierName"
-                      value={order.delivery?.carrierName}
+                      value={deliveryInfo.carrierName}
                       onChange={handleInputChange}
                       className="mt-1 block w-full border rounded p-2"
                     />
@@ -151,7 +182,7 @@ const OrderDetails = () => {
                     <input
                       type="text"
                       name="driverName"
-                      value={order.delivery?.driverName}
+                      value={deliveryInfo.driverName}
                       onChange={handleInputChange}
                       className="mt-1 block w-full border rounded p-2"
                     />
@@ -161,7 +192,7 @@ const OrderDetails = () => {
                     <input
                       type="text"
                       name="driverContact"
-                      value={order.delivery?.driverContact}
+                      value={deliveryInfo.driverContact}
                       onChange={handleInputChange}
                       className="mt-1 block w-full border rounded p-2"
                     />
@@ -171,9 +202,20 @@ const OrderDetails = () => {
                     <input
                       type="text"
                       name="carRegistration"
-                      value={order.delivery?.carRegistration}
+                      value={deliveryInfo.carRegistration}
                       onChange={handleInputChange}
                       className="mt-1 block w-full border rounded p-2"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Scheduled Date*</label>
+                    <input
+                      type="datetime-local"
+                      name="scheduledDate"
+                      value={deliveryInfo.scheduledDate}
+                      onChange={handleDateChange}
+                      className="mt-1 block w-full border rounded p-2"
+                      required
                     />
                   </div>
                   <div className="flex justify-end space-x-2 pt-2">
@@ -194,24 +236,24 @@ const OrderDetails = () => {
               ) : (
                 <>
                   <p className="font-medium">Location: {order.deliveryLocation}</p>
-                  {deliveryInfo.carrierName && (
+                  {order.delivery?.carrierName && (
                     <p className="mt-2">
-                      <span className="font-medium">Carrier:</span> {order.delivery?.carrierName}
+                      <span className="font-medium">Carrier:</span> {order.delivery.carrierName}
                     </p>
                   )}
-                  {deliveryInfo.driverName && (
+                  {order.delivery?.driverName && (
                     <p>
-                      <span className="font-medium">Driver:</span> {order.delivery?.driverName}
+                      <span className="font-medium">Driver:</span> {order.delivery.driverName}
                     </p>
                   )}
-                  {deliveryInfo.driverContact && (
+                  {order.delivery?.driverContact && (
                     <p>
-                      <span className="font-medium">Driver Contact:</span> {order.delivery?.driverContact}
+                      <span className="font-medium">Driver Contact:</span> {order.delivery.driverContact}
                     </p>
                   )}
-                  {deliveryInfo.carRegistration && (
+                  {order.delivery?.carRegistration && (
                     <p>
-                      <span className="font-medium">Vehicle:</span> {order.delivery?.carRegistration}
+                      <span className="font-medium">Vehicle:</span> {order.delivery.carRegistration}
                     </p>
                   )}
                   {order.deliveryNotes && (
@@ -243,14 +285,17 @@ const OrderDetails = () => {
                     <div className="flex items-center">
                       <div className="ml-4">
                         <p className="font-medium">{item.book?.title || 'Unknown Product'}</p>
-                        <p className="text-gray-600 text-sm">SKU: {item.book?.id || 'N/A'}</p>
+                        <p className="text-gray-600 text-sm">
+                          {item.book?.class?.name && `Class: ${item.book.class.name}`}
+                          {item.book?.subject?.name && ` | Subject: ${item.book.subject.name}`}
+                        </p>
                       </div>
                     </div>
                   </td>
-                  <td className="py-3 px-4">${item.book?.price?.toFixed(2) || '0.00'}</td>
+                  <td className="py-3 px-4">KSh {item.price?.toFixed(2) || '0.00'}</td>
                   <td className="py-3 px-4">{item.quantity}</td>
                   <td className="py-3 px-4">
-                    ${((item.book?.price || 0) * item.quantity).toFixed(2)}
+                    KSh {(item.price * item.quantity).toFixed(2)}
                   </td>
                 </tr>
               ))}
@@ -260,19 +305,9 @@ const OrderDetails = () => {
 
         <div className="mt-6 flex justify-end">
           <div className="bg-gray-50 p-4 rounded w-full md:w-1/3">
-            <div className="flex justify-between mb-2">
-              <span className="text-gray-600">Subtotal:</span>
-              <span>
-                {/* ${order.items?.reduce((sum, item) => sum + ((item.book?.price || 0) * item.quantity, 0).toFixed(2) || '0.00'} */}
-              </span>
-            </div>
-            <div className="flex justify-between mb-2">
-              <span className="text-gray-600">Shipping:</span>
-              <span>$0.00</span>
-            </div>
             <div className="flex justify-between font-bold text-lg mt-4 pt-4 border-t">
               <span>Total:</span>
-              <span>${order.total?.toFixed(2) || '0.00'}</span>
+              <span>KSh {order.total?.toFixed(2) || '0.00'}</span>
             </div>
           </div>
         </div>

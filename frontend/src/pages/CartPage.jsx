@@ -16,7 +16,7 @@ export default function Cart() {
   const subtotals = useSelector(selectCartSubtotal);
   console.log('Full user state:', useSelector(state => state.user));
 console.log('User info from state:', userInfo);
-console.log('User ID:', userInfo?.user?.id);
+console.log('User ID:', userInfo?.id);
 
   const [deliveryInfo, setDeliveryInfo] = useState({
     location: '',
@@ -49,7 +49,7 @@ const handleCreateOrder = async () => {
     setIsCreatingOrder(true);
     
     const orderData = {
-      userId: userInfo?.user?.id,  
+      userId: userInfo?.id,  
       items: cartItems.map(item => ({
         bookId: item.id,
         quantity: item.quantity

@@ -16,6 +16,7 @@ import ClientLayout from "./ClientLayout";
 import ShopPage from "./pages/ShopPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import OrderDetails from "./pages/orders/orderDetails";
+import UserOrderPage from "./pages/orders/userOrders";
 
 const App = () => {
   return (
@@ -42,6 +43,8 @@ const App = () => {
             <Route path=':id' element={<OrderDetails />} />
           </Route>
            {/* <Route path='/orders' element={<OrdersPage />} /> */}
+            <Route path='/user' element={<UserOrderPage />} />
+
         </Route>
         {/* <Route path='/orders/:id' element={<OrderDetails />} /> */}
       </Routes>
