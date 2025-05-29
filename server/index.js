@@ -7,6 +7,7 @@ import classRoutes from "./routes/class.js";
 import subjectRoutes from "./routes/subjects.js";
 import discountRoutes from "./routes/discount.js"
 import orderRoutes from "./routes/orders.js";
+import dashboardRoutes from "./routes/dashboard.js"
 
 dotenv.config();
 const app = express();
@@ -19,6 +20,7 @@ app.use("/api/classes", classRoutes);
 app.use("/api/subjects", subjectRoutes);
 app.use("/api/discounts", discountRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 
 

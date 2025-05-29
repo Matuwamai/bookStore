@@ -383,7 +383,7 @@ export const updateOrderDeliveryDetails = async (req, res) => {
 
     res.status(200).json({
       message: "Order delivery details updated successfully",
-      order: responseOrder
+     
     });
 
   } catch (error) {
