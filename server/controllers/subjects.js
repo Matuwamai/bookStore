@@ -6,7 +6,6 @@ export const createSubject = async (req, res) => {
   try {
     const { name, description } = req.body;
 
-    // Check if subject already exists
     const existingSubject = await prisma.subject.findUnique({
       where: { name },
     });
@@ -30,8 +29,20 @@ export const createSubject = async (req, res) => {
 };
 
 export const getSubjects = async (req, res) => {
+  const {search, page ,limit} = req.query;
+  const currentPage = parseInt(page)|| 1 ;
+  const pageSize = parseInt(limit)|| 10;
+  const skip =( currentPage - 1)*pageSize;
   try {
-    const subjects = await prisma.subject.findMany();
+    const subjects = await prisma.subject.findMany({
+      where:{
+        OR:[
+          {name: {contains:search}}
+        ]
+      }, 
+      skip,
+      take : pageSize
+    });
 
     res.status(200).json(subjects);
   } catch (error) {

@@ -14,7 +14,6 @@ export const createDiscount = async (req, res) => {
     if (type === "BOOK" && !bookId) {
       return res.status(400).json({ message: "Book ID is required for book discounts" });
     }
-
     // Create the discount
     const discount = await prisma.discount.create({
       data: {
@@ -67,20 +66,16 @@ export const getUserDiscounts = async (req, res) => {
     res.status(500).json({ message: "Error fetching user discounts" });
   }
 };
-
-
 // Get discounts for a book
 export const getBookDiscounts = async (req, res) => {
   try {
     const { bookId } = req.params;
-
     const discounts = await prisma.discount.findMany({
       where: {
         bookId: Number(bookId),
-        validUntil: { gte: new Date() }, // Filter out expired discounts
+        validUntil: { gte: new Date() }, 
       },
     });
-
     res.status(200).json(discounts);
   } catch (error) {
     console.error("Error fetching book discounts:", error);

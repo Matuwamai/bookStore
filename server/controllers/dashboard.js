@@ -13,15 +13,10 @@ export const getDashboardStats = async (req, res) => {
       monthlySales,
       recentOrders
     ] = await Promise.all([
-      // 1.1 Total Stock
       prisma.book.aggregate({
         _sum: { stock: true },
       }),
-      
-      // 1.2 Total Orders
       prisma.order.count(),
-      
-      // 1.3 Sales data for completed orders
       prisma.orderItem.findMany({
         where: {
           order: {
@@ -32,8 +27,6 @@ export const getDashboardStats = async (req, res) => {
         },
         select: { price: true, quantity: true },
       }),
-      
-      // 1.4 Stock by Subject
       prisma.book.groupBy({
         by: ['subjectId'],
         _sum: { stock: true },

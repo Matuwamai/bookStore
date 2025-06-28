@@ -18,22 +18,16 @@ export const createOrder = async (req, res) => {
     if (!deliveryLocation || !deliveryContact) {
       return res.status(400).json({ message: "Delivery location and contact are required" });
     }
-
     let totalAmount = 0;
     const orderItems = [];
-
-    // Process each item and calculate total
     for (const item of items) {
       const book = await prisma.book.findUnique({
         where: { id: item.bookId },
         select: { price: true }
       });
-
       if (!book) {
         return res.status(404).json({ message: `Book with ID ${item.bookId} not found` });
       }
-
-      // Check for discounts
       const discount = await prisma.discount.findFirst({
         where: {
           bookId: item.bookId,
@@ -42,7 +36,6 @@ export const createOrder = async (req, res) => {
         },
         orderBy: { amount: "desc" }
       });
-
       let price = book.price;
       if (discount) {
         price -= discount.amount;
@@ -95,8 +88,18 @@ export const createOrder = async (req, res) => {
 
 
 export const getOrders = async (req, res) => {
+  const {search, page ,limit} = req.query;
+  const currentPage = parseInt(page)|| 1;
+  const pageSize = parseInt(limit)|| 10;
+  const skip = (currentPage - 1)*pageSize
   try {
     const orders = await prisma.order.findMany({
+      where:{
+        OR: [
+          {createdAt: { contains:search }},
+          {user:{name:{contains: search}}}
+        ]
+      },
       include: {
         user: {
           select: {
@@ -120,6 +123,8 @@ export const getOrders = async (req, res) => {
       orderBy: {
         createdAt: 'desc',
       },
+      skip,
+      take: pageSize
     });
     const formattedOrders = orders.map(order => ({
       ...order,

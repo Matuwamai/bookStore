@@ -93,6 +93,10 @@ export const login = async (req, res) => {
 };
 
 export const listUsers = async (req, res) => {
+  const {search, page , limit}  = req.query;
+  const currentPage = parseInt(page)|| 1;
+  const pageSize = parseInt(limit)|| 10;
+  const skip = (currentPage - 1)* pageSize
   try {
     const { role } = req.query;
     
@@ -103,6 +107,10 @@ export const listUsers = async (req, res) => {
 
     const users = await prisma.user.findMany({
       where: whereClause,
+      OR:[
+        {name:{contains: search}},
+        {email:{contains : search}}
+      ],
       select: {
         id: true,
         name: true,

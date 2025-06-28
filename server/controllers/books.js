@@ -5,8 +5,6 @@ const prisma = new PrismaClient();
 export const createBook = async (req, res) => {
   try {
     const { title, author, price, stock, imageUrl, description, wholesale, classId, subjectId } = req.body;
-
-    // Validate classId and subjectId
     const classExists = await prisma.class.findUnique({
       where: { id: Number(classId) },
     });
@@ -49,15 +47,32 @@ export const createBook = async (req, res) => {
   }
 };
 export const getBooks = async (req, res) => {
+  const { search, page, limit } = req.query
+  const currentPage = parseInt(page) || 1;
+  const pageSize = parseInt(limit) || 10;
+  const skip = (currentPage - 1) * pageSize;
+  const totalBooks = prisma.book.count();
   try {
     const books = await prisma.book.findMany({
+      where: {
+        OR:
+          [
+            { title: { contains: search } },
+            { author: { contains: search } },
+            { description: { contains: search } }
+          ]
+      },
       include: {
         class: true,
         subject: true,
-      },
+      }
+      ,
+      skip,
+      take: pageSize
     });
 
-    res.status(200).json(books);
+    return  res.status(200).json;{ totalBooks, pageSize, currentPage, books };
+   
   } catch (error) {
     console.error("Error fetching books:", error);
     res.status(500).json({ message: "Error fetching books" });
@@ -67,7 +82,7 @@ export const getBooks = async (req, res) => {
 export const getBookById = async (req, res) => {
   try {
     const { name } = req.params;
-    
+
     const book = await prisma.book.findUnique({
       where: { title: name },
       include: { class: true, subject: true },
@@ -118,10 +133,10 @@ export const deleteBook = async (req, res) => {
 
 export const searchBooks = async (req, res) => {
   const { query, classId, subjectId } = req.query;
-  
+
   try {
     const where = {};
-    
+
     if (query) {
       where.OR = [
         { title: { contains: query, mode: 'insensitive' } },
@@ -129,10 +144,10 @@ export const searchBooks = async (req, res) => {
         { description: { contains: query, mode: 'insensitive' } }
       ];
     }
-    
+
     if (classId) where.classId = Number(classId);
     if (subjectId) where.subjectId = Number(subjectId);
-    
+
     const books = await prisma.book.findMany({
       where,
       include: {
@@ -140,7 +155,7 @@ export const searchBooks = async (req, res) => {
         subject: true
       }
     });
-    
+
     res.json(books);
   } catch (error) {
     console.error("Search error:", error);
