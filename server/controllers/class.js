@@ -27,19 +27,19 @@ export const createClass = async (req, res) => {
   }
 };
 export const getClasses = async (req, res) => {
-  const {search, page , limit} = req.query;
-  const currentPage = parseInt(page)||1;
-  const pageSize = parseInt(limit)|| 10;
-  const skip =( currentPage -1)*pageSize
+  const { search, page, limit } = req.query;
+  const currentPage = parseInt(page) || 1;
+  const pageSize = parseInt(limit) || 10;
+  const skip = (currentPage - 1) * pageSize;
   try {
     const classes = await prisma.class.findMany({
-      where:{
-        OR:[
-          {name:{contains : search}}
-        ]
-      }, 
-      skip,
-      take : pageSize
+      // where:{
+      //   OR:[
+      //     {name:{contains : search}}
+      //   ]
+      // },
+      // skip,
+      // take : pageSize
     });
 
     res.status(200).json(classes);
@@ -110,4 +110,3 @@ export const deleteClass = async (req, res) => {
     res.status(500).json({ message: "Error deleting class" });
   }
 };
- 
