@@ -1,88 +1,63 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export const productSlice = createSlice({
+const productSlice = createSlice({
   name: "product",
   initialState: {
+    products: [],
+    product: null,
     loading: false,
     error: null,
     success: false,
-    products: [],
-    productDetails: null,
-    updateSuccess: false,
   },
   reducers: {
-    resetProductState: (state) => {
-      state.loading = false;
-      state.error = null;
-      state.success = false;
-      state.updateSuccess = false;
-    },
-    createStart: (state) => {
+    // Create product
+    createProductStart: (state) => {
       state.loading = true;
       state.error = null;
       state.success = false;
     },
-    createSuccess: (state) => {
+    createProductSuccess: (state, action) => {
       state.loading = false;
+      state.products.push(action.payload);
       state.success = true;
+      state.error = null;
     },
-    createFail: (state, action) => {
+    createProductFail: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+      state.success = false;
+    },
+
+    // Fetch products
+    fetchProductsStart: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    fetchProductsSuccess: (state, action) => {
+      state.loading = false;
+      state.products = action.payload;
+      state.error = null;
+    },
+    fetchProductsFail: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },
-    fetchProductsStart: (state) => {
-        state.loading = true;
-        state.error = null;
-    },
-    fetchProductsSuccess: (state, action) => {
-        state.loading = false;
-        state.products = action.payload;
-    },
-    fetchProductsFail: (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-    },
-    fetchProductDetailsStart: (state) => {
-        state.loading = true;
-        state.error = null;
-    },
-    fetchProductDetailsSuccess: (state, action) => {
-        state.loading = false;
-        state.productDetails = action.payload;
-    },
-    fetchProductDetailsFail: (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-    },
-    updateProductStart: (state) => {
-        state.loading = true;
-        state.error = null;
-        state.updateSuccess = false;
-    },
-    updateProductSuccess: (state) => {
-        state.loading = false;
-        state.updateSuccess = true;
-    },
-    updateProductFail: (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+
+    // Reset success state
+    resetProductSuccess: (state) => {
+      state.success = false;
     },
   },
 });
 
 export const {
-    createStart,
-    createSuccess,
-    createFail,
-    fetchProductsStart,
-    fetchProductsSuccess,
-    fetchProductsFail,
-    fetchProductDetailsStart,
-    fetchProductDetailsSuccess,
-    fetchProductDetailsFail,
-    updateProductStart,
-    updateProductSuccess,
-    updateProductFail,
-    resetProductState,
+  createProductStart,
+  createProductSuccess,
+  createProductFail,
+  fetchProductsStart,
+  fetchProductsSuccess,
+  fetchProductsFail,
+  resetProductSuccess,
 } = productSlice.actions;
+
 export default productSlice.reducer;
