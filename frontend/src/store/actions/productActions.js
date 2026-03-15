@@ -1,5 +1,15 @@
 import { BASE_URL } from "../../base_url";
-import { createFail, createStart, createSuccess, fetchProductDetailsFail, fetchProductDetailsStart, fetchProductDetailsSuccess, fetchProductsFail, fetchProductsStart, fetchProductsSuccess } from "../slices/productSlices";
+import {
+  createFail,
+  createStart,
+  createSuccess,
+  fetchProductDetailsFail,
+  fetchProductDetailsStart,
+  fetchProductDetailsSuccess,
+  fetchProductsFail,
+  fetchProductsStart,
+  fetchProductsSuccess,
+} from "../slices/productSlices";
 import api from "../../lib/api";
 
 export const createProduct = (details) => async (dispatch) => {
@@ -25,13 +35,12 @@ export const fetchProducts = () => async (dispatch) => {
 };
 
 export const fetchProductDetails = (name) => async (dispatch) => {
-    dispatch(fetchProductDetailsStart());
-    try {
-        const { data } = await api.get(`${BASE_URL}/books/${name}`);
-        dispatch(fetchProductDetailsSuccess(data));
-    } catch (err) {
-        const errMsg = err.response ? err.response.data.message : err.message;
-        dispatch(fetchProductDetailsFail(errMsg));
-    }
-}
-
+  dispatch(fetchProductDetailsStart());
+  try {
+    const { data } = await api.get(`${BASE_URL}/books/${name}`);
+    dispatch(fetchProductDetailsSuccess(data));
+  } catch (err) {
+    const errMsg = err.response ? err.response.data.message : err.message;
+    dispatch(fetchProductDetailsFail(errMsg));
+  }
+};
