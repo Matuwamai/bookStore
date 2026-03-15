@@ -4,7 +4,16 @@ const prisma = new PrismaClient();
 
 export const createBook = async (req, res) => {
   try {
-    const { title, author, price, stock, imageUrl, description, wholesale, classId, subjectId } = req.body;
+    const {
+      title,
+      author,
+      price,
+      stock,
+      description,
+      wholesale,
+      classId,
+      subjectId,
+    } = req.body;
     const classExists = await prisma.class.findUnique({
       where: { id: Number(classId) },
     });
@@ -24,6 +33,12 @@ export const createBook = async (req, res) => {
     if (existingBook) {
       return res.status(400).json({ message: "Book already exists" });
     }
+    const imageUrl =
+      req.files && req.files.length > 0
+        ? req.files.map((file) => ({
+            url: `${req.protocol}://${req.get("host")}/${file.path.replace(/\\/g, "/")}`,
+          }))
+        : [];
 
     // Create the book
     const book = await prisma.book.create({
@@ -36,7 +51,7 @@ export const createBook = async (req, res) => {
         description,
         imageUrl,
         classId: Number(classId),
-        subjectId: Number(subjectId)
+        subjectId: Number(subjectId),
       },
     });
 
@@ -46,8 +61,18 @@ export const createBook = async (req, res) => {
     res.status(500).json({ message: "Error creating book" });
   }
 };
+const BASE_URL = "http://localhost:3000/bookstore/";
+const attachImageUrl = (book) => {
+  return {
+    ...book,
+    images: book.images.map((img) => ({
+      ...img,
+      url: `${BASE_URL}${img.url.startsWith("/") ? "" : "/"}${img.url}`,
+    })),
+  };
+};
 export const getBooks = async (req, res) => {
-  const { search, page, limit } = req.query
+  const { search, page, limit } = req.query;
   const currentPage = parseInt(page) || 1;
   const pageSize = parseInt(limit) || 10;
   const skip = (currentPage - 1) * pageSize;
@@ -55,24 +80,23 @@ export const getBooks = async (req, res) => {
   try {
     const books = await prisma.book.findMany({
       where: {
-        OR:
-          [
-            { title: { contains: search } },
-            { author: { contains: search } },
-            { description: { contains: search } }
-          ]
+        OR: [
+          { title: { contains: search } },
+          { author: { contains: search } },
+          { description: { contains: search } },
+        ],
       },
       include: {
         class: true,
         subject: true,
-      }
-      ,
+      },
       skip,
-      take: pageSize
+      take: pageSize,
     });
-
-    return  res.status(200).json;{ totalBooks, pageSize, currentPage, books };
-   
+    const bookWithUrl = books.map(attachImageUrl);
+    return res
+      .status(200)
+      .json({ totalBooks, pageSize, currentPage, books: bookWithUrl });
   } catch (error) {
     console.error("Error fetching books:", error);
     res.status(500).json({ message: "Error fetching books" });
@@ -91,8 +115,8 @@ export const getBookById = async (req, res) => {
     if (!book) {
       return res.status(404).json({ message: "Book not found" });
     }
-
-    res.status(200).json(book);
+    const bookWithUrl = attachImageUrl(book);
+    res.status(200).json(bookWithUrl);
   } catch (error) {
     console.error("Error fetching book:", error);
     res.status(500).json({ message: "Error fetching book" });
@@ -102,14 +126,16 @@ export const getBookById = async (req, res) => {
 export const updateBook = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, author, price, stock, wholesale, classId, subjectId } = req.body;
+    const { title, author, price, stock, wholesale, classId, subjectId } =
+      req.body;
 
     const book = await prisma.book.update({
       where: { id: Number(id) },
       data: { title, author, price, stock, wholesale, classId, subjectId },
     });
 
-    res.status(200).json(book);
+    const bookWithUrl = attachImageUrl(book);
+    res.status(200).json(bookWithUrl);
   } catch (error) {
     console.error("Error updating book:", error);
     res.status(500).json({ message: "Error updating book" });
@@ -139,9 +165,9 @@ export const searchBooks = async (req, res) => {
 
     if (query) {
       where.OR = [
-        { title: { contains: query, mode: 'insensitive' } },
-        { author: { contains: query, mode: 'insensitive' } },
-        { description: { contains: query, mode: 'insensitive' } }
+        { title: { contains: query, mode: "insensitive" } },
+        { author: { contains: query, mode: "insensitive" } },
+        { description: { contains: query, mode: "insensitive" } },
       ];
     }
 
@@ -152,8 +178,8 @@ export const searchBooks = async (req, res) => {
       where,
       include: {
         class: true,
-        subject: true
-      }
+        subject: true,
+      },
     });
 
     res.json(books);
