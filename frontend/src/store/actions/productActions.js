@@ -1,46 +1,60 @@
 import { BASE_URL } from "../../base_url";
 import {
-  createFail,
-  createStart,
-  createSuccess,
-  fetchProductDetailsFail,
-  fetchProductDetailsStart,
-  fetchProductDetailsSuccess,
+  createProductFail,
+  createProductStart,
+  createProductSuccess,
   fetchProductsFail,
   fetchProductsStart,
   fetchProductsSuccess,
 } from "../slices/productSlices";
-import api from "../../lib/api";
+import axios from "axios";
 
-export const createProduct = (details) => async (dispatch) => {
-  dispatch(createStart());
+export const createProduct = (formData) => async (dispatch, getState) => {
+  dispatch(createProductStart());
   try {
-    await api.post(`${BASE_URL}/books/`, details);
-    dispatch(createSuccess());
+    const {
+      user: { token },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const { data } = await axios.post(`${BASE_URL}/books`, formData, config);
+    dispatch(createProductSuccess(data));
   } catch (err) {
-    const errMsg = err.response ? err.response.data.message : err.message;
-    dispatch(createFail(errMsg));
+    dispatch(
+      createProductFail(err.response ? err.response.data.message : err.message),
+    );
   }
 };
 
 export const fetchProducts = () => async (dispatch) => {
   dispatch(fetchProductsStart());
   try {
-    const { data } = await api.get(`${BASE_URL}/books/`);
+    const { data } = await axios.get(`${BASE_URL}/books`);
     dispatch(fetchProductsSuccess(data));
   } catch (err) {
-    const errMsg = err.response ? err.response.data.message : err.message;
-    dispatch(fetchProductsFail(errMsg));
+    dispatch(
+      fetchProductsFail(err.response ? err.response.data.message : err.message),
+    );
   }
 };
 
 export const fetchProductDetails = (name) => async (dispatch) => {
   dispatch(fetchProductDetailsStart());
   try {
-    const { data } = await api.get(`${BASE_URL}/books/${name}`);
+    const { data } = await axios.get(`${BASE_URL}/books/${name}`);
     dispatch(fetchProductDetailsSuccess(data));
   } catch (err) {
     const errMsg = err.response ? err.response.data.message : err.message;
     dispatch(fetchProductDetailsFail(errMsg));
   }
 };
+
+// Update createProduct to handle FormData with file upload
+
+// Other product actions...
