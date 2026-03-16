@@ -5,16 +5,18 @@ import {
   getBookById,
   updateBook,
   deleteBook,
-  searchBooks
-} from "../controllers/books.js"
+  searchBooks,
+} from "../controllers/books.js";
+import multer from "multer";
 
 const router = express.Router();
+const upload = multer({ dest: "uploads" });
 
-router.post("/", createBook);
+router.post("/", upload.array("images", 5), createBook);
 router.get("/", getBooks);
 router.get("/:name/details", getBookById);
 router.put("/:id", updateBook);
-router.get('/search', searchBooks);
+router.get("/search", searchBooks);
 router.delete("/:id", deleteBook);
 
 export default router;

@@ -9,9 +9,16 @@ import discountRoutes from "./routes/discount.js";
 import orderRoutes from "./routes/orders.js";
 import dashboardRoutes from "./routes/dashboard.js";
 import logger from "./utils/logger.js";
+import path from "path";
+import { fileURLToPath } from "url";
 
 dotenv.config();
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Make sure this is before your routes
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use(cors());
 app.use((req, res, next) => {
   logger.info(`${req.method} ${req.url}`);
