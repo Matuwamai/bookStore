@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createProduct,
-  resetProductSuccess,
+  resetProductSuccessAction,
 } from "../../store/actions/productActions";
 import { fetchCategories } from "../../store/actions/categoryActions";
 import { toast } from "react-toastify";
@@ -16,9 +16,9 @@ const ProductForm = () => {
 
   const [details, setDetails] = useState({
     title: "",
-    price: "",
+    price: 0,
     description: "",
-    stock: "",
+    stock: 0,
     author: "",
   });
 
@@ -114,9 +114,9 @@ const ProductForm = () => {
       // Reset form
       setDetails({
         title: "",
-        price: "",
+        price: 0,
         description: "",
-        stock: "",
+        stock: 0,
         author: "",
       });
 
@@ -130,7 +130,7 @@ const ProductForm = () => {
       setIsWholesale(false);
 
       // Reset success state
-      dispatch(resetProductSuccess());
+      dispatch(resetProductSuccessAction());
     }
   }, [success, dispatch, imagePreviews]);
 
@@ -203,8 +203,8 @@ const ProductForm = () => {
                 value={details.price}
                 onChange={handleChange}
                 id="price"
-                step="0.01"
-                min="0"
+                step={0.01}
+                min={0}
                 className="mt-1 p-2 border border-gray-300 rounded w-full"
                 required
               />
@@ -222,7 +222,7 @@ const ProductForm = () => {
                 value={details.stock}
                 onChange={handleChange}
                 id="stock"
-                min="0"
+                min={0}
                 className="mt-1 p-2 border border-gray-300 rounded w-full"
               />
             </div>
